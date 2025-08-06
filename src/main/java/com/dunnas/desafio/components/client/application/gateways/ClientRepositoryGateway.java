@@ -8,13 +8,10 @@ public interface ClientRepositoryGateway {
 
     Client create(Client Client);
 
-    Client update(Client Client);
-
     Optional<Client> findById(Long id);
 
-    Optional<Client> findByName(String name);
-
+    Optional<Client> findByCpf(String cpf);
+    
     boolean existsById(Long id);
 
-    void deleteById(Long id);
 }

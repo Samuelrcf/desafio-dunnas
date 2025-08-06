@@ -24,13 +24,6 @@ public class SupplierRepositoryGatewayImpl implements SupplierRepositoryGateway{
 	}
 
 	@Override
-	public Supplier update(Supplier supplier) {
-		SupplierEntity entity = mapper.modelToEntity(supplier); 
-		repository.save(entity);
-		return mapper.entityToModel(entity);
-	}
-
-	@Override
 	public Optional<Supplier> findById(Long id) {
         Optional<SupplierEntity> optionalEntity = repository.findById(id);
 
@@ -61,11 +54,6 @@ public class SupplierRepositoryGatewayImpl implements SupplierRepositoryGateway{
 	@Override
 	public boolean existsById(Long id) {
 		return repository.existsById(id);
-	}
-
-	@Override
-	public void deleteById(Long id) {
-		repository.deleteById(id);
 	}
 
 }

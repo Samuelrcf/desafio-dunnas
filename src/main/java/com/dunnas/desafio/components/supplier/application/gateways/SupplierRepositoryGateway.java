@@ -8,13 +8,10 @@ public interface SupplierRepositoryGateway {
 
     Supplier create(Supplier Supplier);
 
-    Supplier update(Supplier Supplier);
-
     Optional<Supplier> findById(Long id);
 
     Optional<Supplier> findByName(String name);
 
     boolean existsById(Long id);
 
-    void deleteById(Long id);
 }

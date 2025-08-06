@@ -1,7 +1,7 @@
 package com.dunnas.desafio.components.client.infra.persistence.entities;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.dunnas.desafio.components.user.infra.persistence.entities.UserEntity;
 
@@ -28,7 +28,7 @@ public class ClientEntity {
 	private Long id;
 	private String name;
 	private String cpf;
-	private Date birthDate;
+	private LocalDate birthDate;
 	private BigDecimal balance;
 	
 	@OneToOne(cascade = CascadeType.ALL)

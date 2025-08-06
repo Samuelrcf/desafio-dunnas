@@ -25,13 +25,6 @@ public class UserRepositoryGatewayImpl implements UserRepositoryGateway{
 	}
 
 	@Override
-	public User update(User user) {
-		UserEntity entity = mapper.modelToEntity(user); 
-		repository.save(entity);
-		return mapper.entityToModel(entity);
-	}
-
-	@Override
 	public Optional<User> findById(Long id) {
         Optional<UserEntity> optionalEntity = repository.findById(id);
 
@@ -50,8 +43,4 @@ public class UserRepositoryGatewayImpl implements UserRepositoryGateway{
 		return repository.existsById(id);
 	}
 
-	@Override
-	public void deleteById(Long id) {
-		repository.deleteById(id);
-	}
 }

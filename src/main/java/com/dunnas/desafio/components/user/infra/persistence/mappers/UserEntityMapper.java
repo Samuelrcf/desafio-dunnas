@@ -1,8 +1,11 @@
 package com.dunnas.desafio.components.user.infra.persistence.mappers;
 
+import org.springframework.stereotype.Component;
+
 import com.dunnas.desafio.components.user.domain.models.User;
 import com.dunnas.desafio.components.user.infra.persistence.entities.UserEntity;
 
+@Component
 public class UserEntityMapper {
 	
     public UserEntity modelToEntity(User user) {

@@ -1,7 +1,7 @@
 package com.dunnas.desafio.components.client.domain.models;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import com.dunnas.desafio.components.user.domain.models.User;
@@ -11,12 +11,20 @@ public class Client {
 	private Long id;
 	private String name;
 	private String cpf;
-	private Date birthDate;
+	private LocalDate birthDate;
 	private BigDecimal balance;
 	private User user;
 	
-	public Client(Long id, String name, String cpf, Date birthDate, BigDecimal balance, User user) {
+	public Client(Long id, String name, String cpf, LocalDate birthDate, BigDecimal balance, User user) {
 		this.id = id;
+		this.name = name;
+		this.cpf = cpf;
+		this.birthDate = birthDate;
+		this.balance = balance;
+		this.user = user;
+	}
+	
+	public Client(String name, String cpf, LocalDate birthDate, BigDecimal balance, User user) {
 		this.name = name;
 		this.cpf = cpf;
 		this.birthDate = birthDate;
@@ -48,11 +56,11 @@ public class Client {
 		this.cpf = cpf;
 	}
 
-	public Date getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 

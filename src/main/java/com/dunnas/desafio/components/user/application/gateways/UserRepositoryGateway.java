@@ -8,11 +8,8 @@ public interface UserRepositoryGateway {
 
     User create(User User);
 
-    User update(User User);
-
     Optional<User> findById(Long id);
 
     boolean existsById(Long id);
 
-    void deleteById(Long id);
 }

@@ -3,6 +3,8 @@ package com.dunnas.desafio.components.supplier.infra.persistence.mappers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.components.product.infra.persistence.entities.ProductEntity;
 import com.dunnas.desafio.components.product.infra.persistence.mappers.ProductEntityMapper;
@@ -13,6 +15,7 @@ import com.dunnas.desafio.components.user.infra.persistence.mappers.UserEntityMa
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Component
 public class SupplierEntityMapper {
 	
 	private final ProductEntityMapper productEntityMapper;

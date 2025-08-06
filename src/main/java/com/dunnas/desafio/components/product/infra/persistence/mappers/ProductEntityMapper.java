@@ -1,8 +1,11 @@
 package com.dunnas.desafio.components.product.infra.persistence.mappers;
 
+import org.springframework.stereotype.Component;
+
 import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.components.product.infra.persistence.entities.ProductEntity;
 
+@Component
 public class ProductEntityMapper {
 
     public ProductEntity modelToEntity(Product product) {

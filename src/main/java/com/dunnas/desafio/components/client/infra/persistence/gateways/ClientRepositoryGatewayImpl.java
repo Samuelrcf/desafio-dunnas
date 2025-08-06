@@ -27,13 +27,6 @@ public class ClientRepositoryGatewayImpl implements ClientRepositoryGateway{
 	}
 
 	@Override
-	public Client update(Client client) {
-		ClientEntity entity = mapper.modelToEntity(client); 
-		repository.save(entity);
-		return mapper.entityToModel(entity);
-	}
-
-	@Override
 	public Optional<Client> findById(Long id) {
         Optional<ClientEntity> optionalEntity = repository.findById(id);
 
@@ -48,8 +41,8 @@ public class ClientRepositoryGatewayImpl implements ClientRepositoryGateway{
 	}
 
 	@Override
-	public Optional<Client> findByName(String name) {
-		Optional<ClientEntity> optionalEntity = repository.findByName(name);
+	public Optional<Client> findByCpf(String cpf) {
+		Optional<ClientEntity> optionalEntity = repository.findByCpf(cpf);
 		
         if (optionalEntity.isPresent()) {
             ClientEntity entity = optionalEntity.get();
@@ -64,11 +57,6 @@ public class ClientRepositoryGatewayImpl implements ClientRepositoryGateway{
 	@Override
 	public boolean existsById(Long id) {
 		return repository.existsById(id);
-	}
-
-	@Override
-	public void deleteById(Long id) {
-		repository.deleteById(id);
 	}
 
 }

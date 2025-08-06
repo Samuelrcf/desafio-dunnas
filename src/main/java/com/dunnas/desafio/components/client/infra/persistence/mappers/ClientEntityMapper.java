@@ -1,5 +1,7 @@
 package com.dunnas.desafio.components.client.infra.persistence.mappers;
 
+import org.springframework.stereotype.Component;
+
 import com.dunnas.desafio.components.client.domain.models.Client;
 import com.dunnas.desafio.components.client.infra.persistence.entities.ClientEntity;
 import com.dunnas.desafio.components.user.infra.persistence.mappers.UserEntityMapper;
@@ -7,6 +9,7 @@ import com.dunnas.desafio.components.user.infra.persistence.mappers.UserEntityMa
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Component
 public class ClientEntityMapper {
 	
 	private final UserEntityMapper userEntityMapper;

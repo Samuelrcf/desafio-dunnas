@@ -8,13 +8,10 @@ public interface ProductRepositoryGateway {
 
     Product create(Product Product);
 
-    Product update(Product Product);
-
     Optional<Product> findById(Long id);
 
     Optional<Product> findByName(String name);
 
     boolean existsById(Long id);
 
-    void deleteById(Long id);
 }

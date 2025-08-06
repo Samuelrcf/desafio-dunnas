@@ -1,6 +1,6 @@
 package com.dunnas.desafio.components.client.web.dtos;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.dunnas.desafio.components.user.web.dtos.CreateUserDto;
 
@@ -19,7 +19,7 @@ public class CreateClientDto {
     private final String cpf;
     
     @NotNull(message = "Selecione sua data de nascimento.")
-    private final Date birthDate;
+    private final LocalDate birthDate;
     
     @Valid
     @NotNull(message = "Dados de usuário obrigatórios.")
