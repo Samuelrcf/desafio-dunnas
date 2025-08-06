@@ -5,13 +5,13 @@ import java.util.Objects;
 public class User {
 
 	private Long id;
-	private String user;
+	private String userName;
 	private String password;
 	private String role;
 	
-	public User(Long id, String user, String password, String role) {
+	public User(Long id, String userName, String password, String role) {
 		this.id = id;
-		this.user = user;
+		this.userName = userName;
 		this.password = password;
 		this.role = role;
 	}
@@ -24,12 +24,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getUser() {
-		return user;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getPassword() {
@@ -50,7 +50,7 @@ public class User {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, password, role, user);
+		return Objects.hash(id, password, role, userName);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class User {
 			return false;
 		User other = (User) obj;
 		return Objects.equals(id, other.id) && Objects.equals(password, other.password)
-				&& Objects.equals(role, other.role) && Objects.equals(user, other.user);
+				&& Objects.equals(role, other.role) && Objects.equals(userName, other.userName);
 	}
 	
 	

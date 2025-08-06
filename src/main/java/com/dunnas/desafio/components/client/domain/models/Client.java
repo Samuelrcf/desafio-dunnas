@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import com.dunnas.desafio.components.user.domain.models.User;
+
 public class Client {
 
 	private Long id;
@@ -11,13 +13,15 @@ public class Client {
 	private String cpf;
 	private Date birthDate;
 	private BigDecimal balance;
+	private User user;
 	
-	public Client(Long id, String name, String cpf, Date birthDate, BigDecimal balance) {
+	public Client(Long id, String name, String cpf, Date birthDate, BigDecimal balance, User user) {
 		this.id = id;
 		this.name = name;
 		this.cpf = cpf;
 		this.birthDate = birthDate;
 		this.balance = balance;
+		this.user = user;
 	}
 
 	public Long getId() {
@@ -59,6 +63,14 @@ public class Client {
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	@Override
 	public int hashCode() {
@@ -77,6 +89,5 @@ public class Client {
 		return Objects.equals(balance, other.balance) && Objects.equals(birthDate, other.birthDate)
 				&& Objects.equals(cpf, other.cpf) && Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
-	
 
 }

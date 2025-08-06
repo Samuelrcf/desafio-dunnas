@@ -1,0 +1,20 @@
+package com.dunnas.desafio.components.product.application.gateways;
+
+import java.util.Optional;
+
+import com.dunnas.desafio.components.product.domain.models.Product;
+
+public interface ProductRepositoryGateway {
+
+    Product create(Product Product);
+
+    Product update(Product Product);
+
+    Optional<Product> findById(Long id);
+
+    Optional<Product> findByName(String name);
+
+    boolean existsById(Long id);
+
+    void deleteById(Long id);
+}

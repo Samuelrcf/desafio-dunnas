@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.dunnas.desafio.components.product.domain.models.Product;
+import com.dunnas.desafio.components.user.domain.models.User;
 
 public class Supplier {
 
@@ -11,12 +12,14 @@ public class Supplier {
 	private String name;
 	private String cnpj;
 	private List<Product> products;
+	private User user;
 	
-	public Supplier(Long id, String name, String cnpj, List<Product> products) {
+	public Supplier(Long id, String name, String cnpj, List<Product> products, User user) {
 		this.id = id;
 		this.name = name;
 		this.cnpj = cnpj;
 		this.products = products;
+		this.setUser(user);
 	}
 
 	public Long getId() {
@@ -50,6 +53,14 @@ public class Supplier {
 	public void setProducts(List<Product> products) {
 		this.products = products;
 	}
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	@Override
 	public int hashCode() {
@@ -67,5 +78,5 @@ public class Supplier {
 		Supplier other = (Supplier) obj;
 		return Objects.equals(cnpj, other.cnpj) && Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
-	
+
 }
