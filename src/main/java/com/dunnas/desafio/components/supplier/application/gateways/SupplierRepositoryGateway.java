@@ -10,7 +10,7 @@ public interface SupplierRepositoryGateway {
 
     Optional<Supplier> findById(Long id);
 
-    Optional<Supplier> findByName(String name);
+    Optional<Supplier> findByCnpj(String cnpj);
 
     boolean existsById(Long id);
 

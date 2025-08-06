@@ -1,7 +1,5 @@
 package com.dunnas.desafio.components.supplier.web.dtos;
 
-import java.util.Date;
-
 import com.dunnas.desafio.components.user.web.dtos.CreateUserDto;
 
 import jakarta.validation.Valid;
@@ -15,11 +13,8 @@ public class CreateSupplierDto {
     @NotBlank(message = "Digite seu nome completo.")
     private final String name;
     
-    @NotBlank(message = "Digite seu cpf.")
-    private final String cpf;
-    
-    @NotNull(message = "Selecione sua data de nascimento.")
-    private final Date birthDate;
+    @NotBlank(message = "Digite seu cnpj.")
+    private final String cnpj;
 
     @Valid
     @NotNull(message = "Dados de usuário obrigatórios.")

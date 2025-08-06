@@ -2,7 +2,7 @@ package com.dunnas.desafio.components.client.web.mappers;
 
 import org.springframework.stereotype.Component;
 
-import com.dunnas.desafio.components.client.application.usecases.input.CreateClientUseCaseInput;
+import com.dunnas.desafio.components.client.application.usecases.inputs.CreateClientUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CreateClientUseCaseOutput;
 import com.dunnas.desafio.components.client.web.dtos.CreateClientDto;
 import com.dunnas.desafio.components.client.web.dtos.ReadClientDto;

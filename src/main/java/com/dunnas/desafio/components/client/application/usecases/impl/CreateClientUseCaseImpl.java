@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.dunnas.desafio.components.client.application.gateways.ClientRepositoryGateway;
 import com.dunnas.desafio.components.client.application.mappers.ClientDomainMapper;
 import com.dunnas.desafio.components.client.application.usecases.CreateClientUseCase;
-import com.dunnas.desafio.components.client.application.usecases.input.CreateClientUseCaseInput;
+import com.dunnas.desafio.components.client.application.usecases.inputs.CreateClientUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CreateClientUseCaseOutput;
 import com.dunnas.desafio.components.client.domain.models.Client;
 import com.dunnas.desafio.components.user.domain.models.User;

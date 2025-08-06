@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dunnas.desafio.components.client.application.usecases.CreateClientUseCase;
-import com.dunnas.desafio.components.client.application.usecases.input.CreateClientUseCaseInput;
+import com.dunnas.desafio.components.client.application.usecases.inputs.CreateClientUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CreateClientUseCaseOutput;
 import com.dunnas.desafio.components.client.web.dtos.CreateClientDto;
 import com.dunnas.desafio.components.client.web.dtos.ReadClientDto;

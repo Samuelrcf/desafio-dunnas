@@ -8,5 +8,5 @@ import com.dunnas.desafio.components.supplier.infra.persistence.entities.Supplie
 
 public interface SupplierRepository extends JpaRepository<SupplierEntity, Long>{
 
-	Optional<SupplierEntity> findByName(String name);
+	Optional<SupplierEntity> findByCnpj(String cnpj);
 }

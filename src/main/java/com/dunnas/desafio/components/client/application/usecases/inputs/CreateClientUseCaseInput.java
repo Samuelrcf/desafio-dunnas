@@ -1,4 +1,4 @@
-package com.dunnas.desafio.components.client.application.usecases.input;
+package com.dunnas.desafio.components.client.application.usecases.inputs;
 
 import java.time.LocalDate;
 

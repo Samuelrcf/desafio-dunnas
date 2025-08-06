@@ -21,6 +21,12 @@ public class Supplier {
 		this.products = products;
 		this.setUser(user);
 	}
+	
+	public Supplier(String name, String cnpj, User user) {
+		this.name = name;
+		this.cnpj = cnpj;
+		this.setUser(user);
+	}
 
 	public Long getId() {
 		return id;
