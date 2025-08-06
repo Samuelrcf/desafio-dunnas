@@ -12,8 +12,6 @@ public interface UserRepositoryGateway {
 
     Optional<User> findById(Long id);
 
-    Optional<User> findByName(String name);
-
     boolean existsById(Long id);
 
     void deleteById(Long id);

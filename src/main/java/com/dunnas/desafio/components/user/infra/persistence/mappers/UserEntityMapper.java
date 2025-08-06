@@ -5,7 +5,7 @@ import com.dunnas.desafio.components.user.infra.persistence.entities.UserEntity;
 
 public class UserEntityMapper {
 	
-    public static UserEntity modelToEntity(User user) {
+    public UserEntity modelToEntity(User user) {
         if (user == null) return null;
 
         UserEntity entity = new UserEntity();
@@ -17,7 +17,7 @@ public class UserEntityMapper {
         return entity;
     }
 
-    public static User entityToModel(UserEntity entity) {
+    public User entityToModel(UserEntity entity) {
         if (entity == null) return null;
 
         return new User(

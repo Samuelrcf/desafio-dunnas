@@ -5,7 +5,7 @@ import com.dunnas.desafio.components.product.infra.persistence.entities.ProductE
 
 public class ProductEntityMapper {
 
-    public static ProductEntity modelToEntity(Product product) {
+    public ProductEntity modelToEntity(Product product) {
         if (product == null) return null;
 
         ProductEntity entity = new ProductEntity();
@@ -17,7 +17,7 @@ public class ProductEntityMapper {
         return entity;
     }
 
-    public static Product entityToModel(ProductEntity entity) {
+    public Product entityToModel(ProductEntity entity) {
         if (entity == null) return null;
 
         return new Product(

@@ -1,5 +1,6 @@
 package com.dunnas.desafio.components.supplier.infra.persistence.mappers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.dunnas.desafio.components.product.domain.models.Product;
@@ -9,9 +10,15 @@ import com.dunnas.desafio.components.supplier.domain.models.Supplier;
 import com.dunnas.desafio.components.supplier.infra.persistence.entities.SupplierEntity;
 import com.dunnas.desafio.components.user.infra.persistence.mappers.UserEntityMapper;
 
-public class SupplierEntityMapper {
+import lombok.RequiredArgsConstructor;
 
-    public static SupplierEntity modelToEntity(Supplier supplier) {
+@RequiredArgsConstructor
+public class SupplierEntityMapper {
+	
+	private final ProductEntityMapper productEntityMapper;
+	private final UserEntityMapper userEntityMapper;
+
+    public SupplierEntity modelToEntity(Supplier supplier) {
         if (supplier == null) return null;
 
         SupplierEntity entity = new SupplierEntity();
@@ -22,7 +29,7 @@ public class SupplierEntityMapper {
         if (supplier.getProducts() != null) {
             List<ProductEntity> productEntities = supplier.getProducts().stream()
                 .map(product -> {
-                    ProductEntity pe = ProductEntityMapper.modelToEntity(product);
+                    ProductEntity pe = productEntityMapper.modelToEntity(product);
                     pe.setSupplierEntity(entity);
                     return pe;
                 })
@@ -30,19 +37,20 @@ public class SupplierEntityMapper {
             entity.setProductEntities(productEntities);
         }
 
-        entity.setUserEntity(UserEntityMapper.modelToEntity(supplier.getUser()));
+        entity.setUserEntity(userEntityMapper.modelToEntity(supplier.getUser()));
 
         return entity;
     }
 
-    public static Supplier entityToModel(SupplierEntity entity) {
+    public Supplier entityToModel(SupplierEntity entity) {
         if (entity == null) return null;
 
-        List<Product> products = null;
+        List<Product> products = new ArrayList<>();
         if (entity.getProductEntities() != null) {
-            products = entity.getProductEntities().stream()
-                .map(ProductEntityMapper::entityToModel)
-                .toList();
+            for (ProductEntity productEntity : entity.getProductEntities()) {
+                Product product = productEntityMapper.entityToModel(productEntity);
+                products.add(product);
+            }
         }
 
         return new Supplier(
@@ -50,8 +58,9 @@ public class SupplierEntityMapper {
             entity.getName(),
             entity.getCnpj(),
             products,
-            UserEntityMapper.entityToModel(entity.getUserEntity())
+            userEntityMapper.entityToModel(entity.getUserEntity())
         );
     }
+
 }
 

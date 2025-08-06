@@ -2,45 +2,73 @@ package com.dunnas.desafio.components.product.infra.persistence.gateways;
 
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import com.dunnas.desafio.components.product.application.gateways.ProductRepositoryGateway;
 import com.dunnas.desafio.components.product.domain.models.Product;
+import com.dunnas.desafio.components.product.infra.persistence.entities.ProductEntity;
+import com.dunnas.desafio.components.product.infra.persistence.mappers.ProductEntityMapper;
+import com.dunnas.desafio.components.product.infra.persistence.repositories.ProductRepository;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Component
 public class ProductRepositoryGatewayImpl implements ProductRepositoryGateway{
 
+    private final ProductRepository repository;
+    private final ProductEntityMapper mapper;
+	
 	@Override
-	public Product create(Product Product) {
-		// TODO Auto-generated method stub
-		return null;
+	public Product create(Product product) {
+		ProductEntity entity = mapper.modelToEntity(product); 
+		repository.save(entity);
+		return mapper.entityToModel(entity);
 	}
 
 	@Override
-	public Product update(Product Product) {
-		// TODO Auto-generated method stub
-		return null;
+	public Product update(Product product) {
+		ProductEntity entity = mapper.modelToEntity(product); 
+		repository.save(entity);
+		return mapper.entityToModel(entity);
 	}
 
 	@Override
 	public Optional<Product> findById(Long id) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+        Optional<ProductEntity> optionalEntity = repository.findById(id);
+
+        if (optionalEntity.isPresent()) {
+            ProductEntity entity = optionalEntity.get();
+            Product model = mapper.entityToModel(entity);
+
+            return Optional.of(model);
+        }
+        
+        return Optional.empty();
 	}
 
 	@Override
 	public Optional<Product> findByName(String name) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		Optional<ProductEntity> optionalEntity = repository.findByName(name);
+		
+        if (optionalEntity.isPresent()) {
+            ProductEntity entity = optionalEntity.get();
+            Product model = mapper.entityToModel(entity);
+
+            return Optional.of(model);
+        }
+        
+        return Optional.empty();
 	}
 
 	@Override
 	public boolean existsById(Long id) {
-		// TODO Auto-generated method stub
-		return false;
+		return repository.existsById(id);
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		// TODO Auto-generated method stub
-		
+		repository.deleteById(id);
 	}
 
 }
