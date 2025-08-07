@@ -7,9 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.dunnas.desafio.components.client.application.gateways.ClientRepositoryGateway;
 import com.dunnas.desafio.components.client.domain.models.Client;
+import com.dunnas.desafio.components.order.application.exceptions.InsufficientBalanceException;
 import com.dunnas.desafio.components.order.application.gateways.OrderRepositoryGateway;
 import com.dunnas.desafio.components.order.application.mappers.OrderDomainMapper;
 import com.dunnas.desafio.components.order.application.usecases.CreateOrderUseCase;
@@ -48,21 +50,18 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	        .orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); // simulado
 
 	    // 1. Buscar todos os produtos
-	    List<Long> productIds = new ArrayList<>();
-	    for (ProductQuantityInput pq : input.products()) {
-	        productIds.add(pq.productId());
-	    }
+	    List<Long> productIds = input.products().stream()
+	        .map(ProductQuantityInput::productId)
+	        .toList();
 
 	    List<Product> products = productRepositoryGateway.findAllById(productIds);
 
-	    // 2. Mapear por ID
-	    Map<Long, Product> productMap = new HashMap<>();
-	    for (Product product : products) {
-	        productMap.put(product.getId(), product);
-	    }
+	    Map<Long, Product> productMap = products.stream()
+	        .collect(Collectors.toMap(Product::getId, p -> p));
 
-	    // 3. Agrupar os itens por fornecedor
+	    // 2. Agrupar os itens por fornecedor e calcular total geral
 	    Map<Long, List<OrderItem>> supplierToItemsMap = new HashMap<>();
+	    BigDecimal totalGeral = BigDecimal.ZERO;
 
 	    for (ProductQuantityInput pq : input.products()) {
 	        Product product = productMap.get(pq.productId());
@@ -70,24 +69,32 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	            throw new ObjectNotFoundException("Produto não encontrado: ID = " + pq.productId());
 	        }
 
-	        Supplier supplier = product.getSupplier();
-
 	        BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(pq.quantity()));
 	        OrderItem item = new OrderItem(product, pq.quantity(), subtotal);
 
 	        supplierToItemsMap
-	            .computeIfAbsent(supplier.getId(), k -> new ArrayList<>())
+	            .computeIfAbsent(product.getSupplier().getId(), k -> new ArrayList<>())
 	            .add(item);
+
+	        totalGeral = totalGeral.add(subtotal);
 	    }
 
-	    // 4. Criar um pedido para cada fornecedor
+	    // 3. Verificar saldo do cliente
+	    if (client.getBalance().compareTo(totalGeral) < 0) {
+	        throw new InsufficientBalanceException("Saldo insuficiente para realizar o pedido. Total: R$ " 
+	            + totalGeral + ", Saldo disponível: R$ " + client.getBalance());
+	    }
+
+	    // 4. Descontar o saldo do cliente
+	    client.decreaseBalance(totalGeral);
+	    clientRepositoryGateway.create(client); // Salvar alteração de saldo
+
+	    // 5. Criar os pedidos por fornecedor
 	    List<CreateOrderUseCaseOutput> outputs = new ArrayList<>();
 
 	    for (Map.Entry<Long, List<OrderItem>> entry : supplierToItemsMap.entrySet()) {
-
-	    	List<OrderItem> items = entry.getValue();
-
-	        Supplier supplier = items.get(0).getProduct().getSupplier(); // todos são do mesmo fornecedor
+	        List<OrderItem> items = entry.getValue();
+	        Supplier supplier = items.get(0).getProduct().getSupplier();
 
 	        BigDecimal total = items.stream()
 	            .map(OrderItem::getSubtotal)
@@ -96,7 +103,7 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	        List<Product> orderProducts = items.stream()
 	            .map(OrderItem::getProduct)
 	            .toList();
-	        
+
 	        UUID orderCode = UUID.randomUUID();
 
 	        Order order = new Order(orderCode, client, supplier, orderProducts, items, total, LocalDateTime.now());
@@ -109,5 +116,6 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 
 	    return outputs;
 	}
+
 
 }

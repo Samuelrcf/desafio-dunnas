@@ -120,4 +120,11 @@ public class Client {
 				&& Objects.equals(cpf, other.cpf) && Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
 
+	public void decreaseBalance(BigDecimal amount) {
+	    if (this.balance.compareTo(amount) < 0) {
+	        throw new IllegalArgumentException("Saldo insuficiente");
+	    }
+	    this.balance = this.balance.subtract(amount);
+	}
+
 }

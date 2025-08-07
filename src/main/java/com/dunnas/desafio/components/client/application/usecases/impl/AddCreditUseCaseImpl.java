@@ -1,5 +1,7 @@
 package com.dunnas.desafio.components.client.application.usecases.impl;
 
+import java.math.BigDecimal;
+
 import com.dunnas.desafio.components.client.application.gateways.ClientRepositoryGateway;
 import com.dunnas.desafio.components.client.application.mappers.ClientDomainMapper;
 import com.dunnas.desafio.components.client.application.usecases.AddCreditUseCase;
@@ -27,8 +29,9 @@ public class AddCreditUseCaseImpl implements AddCreditUseCase {
 		//ClientEntity clientEntity = clientRepository.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado"));
 		
 		Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); //excluir
-		
-		client.setBalance(input.amount());
+
+	    BigDecimal newBalance = client.getBalance().add(input.amount());
+	    client.setBalance(newBalance);
 		
 		Client updatedClient = clientRepositoryGateway.create(client);
 		
