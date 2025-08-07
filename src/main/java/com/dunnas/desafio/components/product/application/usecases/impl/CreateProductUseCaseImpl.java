@@ -6,27 +6,27 @@ import com.dunnas.desafio.components.product.application.usecases.CreateProductU
 import com.dunnas.desafio.components.product.application.usecases.inputs.CreateProductUseCaseInput;
 import com.dunnas.desafio.components.product.application.usecases.outputs.CreateProductUseCaseOutput;
 import com.dunnas.desafio.components.product.domain.models.Product;
+import com.dunnas.desafio.components.supplier.application.gateways.SupplierRepositoryGateway;
 import com.dunnas.desafio.components.supplier.domain.models.Supplier;
-import com.dunnas.desafio.components.supplier.infra.persistence.entities.SupplierEntity;
 import com.dunnas.desafio.components.supplier.infra.persistence.mappers.SupplierEntityMapper;
-import com.dunnas.desafio.components.supplier.infra.persistence.repositories.SupplierRepository;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
 import com.dunnas.desafio.shared.exceptions.ObjectNotFoundException;
+import com.dunnas.desafio.shared.exceptions.UnauthorizedException;
 
 public class CreateProductUseCaseImpl implements CreateProductUseCase {
 
 	private final ProductRepositoryGateway productRepositoryGateway;
 	private final ProductDomainMapper productDomainMapper;
 	private final CurrentUserProvider currentUserProvider;
-	private final SupplierRepository supplierRepository;
+	private final SupplierRepositoryGateway supplierRepositoryGateway;
 	private final SupplierEntityMapper supplierEntityMapper;
 
 	public CreateProductUseCaseImpl(ProductRepositoryGateway productRepositoryGateway,
-			ProductDomainMapper productDomainMapper, CurrentUserProvider currentUserProvider, SupplierRepository supplierRepository, SupplierEntityMapper supplierEntityMapper) {
+			ProductDomainMapper productDomainMapper, CurrentUserProvider currentUserProvider, SupplierRepositoryGateway supplierRepositoryGateway, SupplierEntityMapper supplierEntityMapper) {
 		this.productRepositoryGateway = productRepositoryGateway;
 		this.productDomainMapper = productDomainMapper;
 		this.currentUserProvider = currentUserProvider;
-		this.supplierRepository = supplierRepository;
+		this.supplierRepositoryGateway = supplierRepositoryGateway;
 		this.supplierEntityMapper = supplierEntityMapper;
 	}
 
@@ -35,12 +35,10 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 
 		//Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
 		
-		//SupplierEntity supplierEntity = supplierRepository.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado"));
+		//Supplier supplier = supplierRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado"));
 		
-		SupplierEntity supplierEntity = supplierRepository.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); //excluir
+		Supplier supplier = supplierRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); //excluir
 		
-		Supplier supplier = supplierEntityMapper.entityToModel(supplierEntity);
-
 		Product product = new Product(input.name(), input.description(), input.price(), supplier);
 
 		Product createdProduct = productRepositoryGateway.create(product);

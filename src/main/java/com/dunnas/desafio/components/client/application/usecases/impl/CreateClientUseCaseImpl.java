@@ -39,6 +39,6 @@ public class CreateClientUseCaseImpl implements CreateClientUseCase {
 		}
 
 		Client createdClient = clientRepositoryGateway.create(client);
-		return clientDomainMapper.domainToOutput(createdClient);
+		return clientDomainMapper.domainToCreateClientUseCaseOutput(createdClient);
 	}
 }

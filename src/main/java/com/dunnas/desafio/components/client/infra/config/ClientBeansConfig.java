@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.dunnas.desafio.components.client.application.gateways.ClientRepositoryGateway;
 import com.dunnas.desafio.components.client.application.mappers.ClientDomainMapper;
+import com.dunnas.desafio.components.client.application.usecases.AddCreditUseCase;
 import com.dunnas.desafio.components.client.application.usecases.CreateClientUseCase;
+import com.dunnas.desafio.components.client.application.usecases.impl.AddCreditUseCaseImpl;
 import com.dunnas.desafio.components.client.application.usecases.impl.CreateClientUseCaseImpl;
 import com.dunnas.desafio.components.user.application.mappers.UserDomainMapper;
 import com.dunnas.desafio.shared.security.PasswordHasher;
@@ -16,6 +18,11 @@ public class ClientBeansConfig {
     @Bean
     CreateClientUseCase createClientUseCase(ClientRepositoryGateway clientRepositoryGateway, ClientDomainMapper clientDomainMapper, PasswordHasher passwordHasher) {
         return new CreateClientUseCaseImpl(clientRepositoryGateway, clientDomainMapper, passwordHasher);
+    }
+    
+    @Bean
+    AddCreditUseCase addCreditUseCase(ClientRepositoryGateway clientRepositoryGateway, ClientDomainMapper clientDomainMapper) {
+    	return new AddCreditUseCaseImpl(clientRepositoryGateway, clientDomainMapper);
     }
     
     @Bean

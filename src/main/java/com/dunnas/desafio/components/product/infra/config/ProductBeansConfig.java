@@ -7,8 +7,8 @@ import com.dunnas.desafio.components.product.application.gateways.ProductReposit
 import com.dunnas.desafio.components.product.application.mappers.ProductDomainMapper;
 import com.dunnas.desafio.components.product.application.usecases.CreateProductUseCase;
 import com.dunnas.desafio.components.product.application.usecases.impl.CreateProductUseCaseImpl;
+import com.dunnas.desafio.components.supplier.application.gateways.SupplierRepositoryGateway;
 import com.dunnas.desafio.components.supplier.infra.persistence.mappers.SupplierEntityMapper;
-import com.dunnas.desafio.components.supplier.infra.persistence.repositories.SupplierRepository;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
 
 @Configuration
@@ -17,8 +17,8 @@ public class ProductBeansConfig {
 	@Bean
 	CreateProductUseCase createProductUseCase(ProductRepositoryGateway productRepositoryGateway,
 			ProductDomainMapper productDomainMapper, CurrentUserProvider currentUserProvider,
-			SupplierRepository supplierRepository, SupplierEntityMapper supplierEntityMapper) {
-		return new CreateProductUseCaseImpl(productRepositoryGateway, productDomainMapper, currentUserProvider, supplierRepository, supplierEntityMapper);
+			SupplierRepositoryGateway supplierRepositoryGateway, SupplierEntityMapper supplierEntityMapper) {
+		return new CreateProductUseCaseImpl(productRepositoryGateway, productDomainMapper, currentUserProvider, supplierRepositoryGateway, supplierEntityMapper);
 	}
 
 	@Bean

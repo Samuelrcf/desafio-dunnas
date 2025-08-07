@@ -2,8 +2,11 @@ package com.dunnas.desafio.components.client.web.mappers;
 
 import org.springframework.stereotype.Component;
 
+import com.dunnas.desafio.components.client.application.usecases.inputs.AddCreditUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.inputs.CreateClientUseCaseInput;
+import com.dunnas.desafio.components.client.application.usecases.outputs.AddCreditUseCaseOutput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CreateClientUseCaseOutput;
+import com.dunnas.desafio.components.client.web.dtos.AddCreditDto;
 import com.dunnas.desafio.components.client.web.dtos.CreateClientDto;
 import com.dunnas.desafio.components.client.web.dtos.ReadClientDto;
 import com.dunnas.desafio.components.user.application.usecases.inputs.CreateUserInput;
@@ -18,7 +21,7 @@ public class ClientDtoMapper {
 
 	private final UserDtoMapper userDtoMapper;
 
-	public CreateClientUseCaseInput createDtoToCreateUseCaseInput(CreateClientDto requestDto) {
+	public CreateClientUseCaseInput createDtoToCreateClientUseCaseInput(CreateClientDto requestDto) {
 
 		CreateUserInput createUserInput = userDtoMapper.createUserDtoToCreateUserInput(requestDto.getCreateUserDto());
 
@@ -26,7 +29,19 @@ public class ClientDtoMapper {
 				createUserInput);
 	}
 
-	public ReadClientDto createUseCaseOutputToReadDto(CreateClientUseCaseOutput output) {
+	public ReadClientDto createClientUseCaseOutputToReadDto(CreateClientUseCaseOutput output) {
+		ReadUserDto readUserDto = userDtoMapper.createUserOutputToReadUserDto(output.user());
+		
+		return new ReadClientDto(output.id(), output.name(), output.cpf(), output.birthDate(), output.balance(), readUserDto);
+	}
+	
+	public AddCreditUseCaseInput addCreditDtoToAddCreditUseCaseInput(AddCreditDto requestDto) {
+
+		return new AddCreditUseCaseInput(requestDto.getAmount());
+	}
+	
+
+	public ReadClientDto addCreditUseCaseOutputToReadDto(AddCreditUseCaseOutput output) {
 		ReadUserDto readUserDto = userDtoMapper.createUserOutputToReadUserDto(output.user());
 		
 		return new ReadClientDto(output.id(), output.name(), output.cpf(), output.birthDate(), output.balance(), readUserDto);
