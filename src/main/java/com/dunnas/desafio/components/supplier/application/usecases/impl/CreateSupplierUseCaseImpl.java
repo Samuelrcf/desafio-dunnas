@@ -7,7 +7,7 @@ import com.dunnas.desafio.components.supplier.application.usecases.inputs.Create
 import com.dunnas.desafio.components.supplier.application.usecases.outputs.CreateSupplierUseCaseOutput;
 import com.dunnas.desafio.components.supplier.domain.models.Supplier;
 import com.dunnas.desafio.components.user.domain.models.User;
-import com.dunnas.desafio.shared.exceptions.ObjectAlreadyExists;
+import com.dunnas.desafio.shared.exceptions.ObjectAlreadyExistsException;
 import com.dunnas.desafio.shared.security.PasswordHasher;
 
 public class CreateSupplierUseCaseImpl implements CreateSupplierUseCase {
@@ -32,7 +32,7 @@ public class CreateSupplierUseCaseImpl implements CreateSupplierUseCase {
 		Supplier supplier = new Supplier(input.name(), input.cnpj(), user);
 
 		if (supplierRepositoryGateway.findByCnpj(supplier.getCnpj()).isPresent()) {
-			throw new ObjectAlreadyExists("Usuário já cadastrado com esse CNPJ.");
+			throw new ObjectAlreadyExistsException("Usuário já cadastrado com esse CNPJ.");
 		}
 
 		Supplier createdSupplier = supplierRepositoryGateway.create(supplier);

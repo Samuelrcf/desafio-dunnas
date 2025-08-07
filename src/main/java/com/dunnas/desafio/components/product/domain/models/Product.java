@@ -21,6 +21,13 @@ public class Product {
 		this.supplier = supplier;
 	}
 	
+	public Product(String name, String description, BigDecimal price, Supplier supplier) {
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.supplier = supplier;
+	}
+	
 	public Product(Long id, String name, String description, BigDecimal price) {
 		this.id = id;
 		this.name = name;

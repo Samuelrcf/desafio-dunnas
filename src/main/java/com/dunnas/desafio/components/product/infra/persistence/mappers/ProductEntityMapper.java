@@ -4,9 +4,15 @@ import org.springframework.stereotype.Component;
 
 import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.components.product.infra.persistence.entities.ProductEntity;
+import com.dunnas.desafio.components.supplier.infra.persistence.mappers.SupplierEntityMapper;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Component
 public class ProductEntityMapper {
+	
+	private final SupplierEntityMapper supplierEntityMapper;
 
     public ProductEntity modelToEntity(Product product) {
         if (product == null) return null;
@@ -16,6 +22,7 @@ public class ProductEntityMapper {
         entity.setName(product.getName());
         entity.setDescription(product.getDescription());
         entity.setPrice(product.getPrice());
+        entity.setSupplierEntity(supplierEntityMapper.modelToEntity(product.getSupplier()));
 
         return entity;
     }
@@ -27,8 +34,10 @@ public class ProductEntityMapper {
             entity.getId(),
             entity.getName(),
             entity.getDescription(),
-            entity.getPrice()
+            entity.getPrice(),
+            supplierEntityMapper.entityToModel(entity.getSupplierEntity())
         );
     }
+
 }
 

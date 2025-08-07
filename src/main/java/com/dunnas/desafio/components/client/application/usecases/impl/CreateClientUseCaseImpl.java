@@ -9,7 +9,7 @@ import com.dunnas.desafio.components.client.application.usecases.inputs.CreateCl
 import com.dunnas.desafio.components.client.application.usecases.outputs.CreateClientUseCaseOutput;
 import com.dunnas.desafio.components.client.domain.models.Client;
 import com.dunnas.desafio.components.user.domain.models.User;
-import com.dunnas.desafio.shared.exceptions.ObjectAlreadyExists;
+import com.dunnas.desafio.shared.exceptions.ObjectAlreadyExistsException;
 import com.dunnas.desafio.shared.security.PasswordHasher;
 
 public class CreateClientUseCaseImpl implements CreateClientUseCase {
@@ -35,7 +35,7 @@ public class CreateClientUseCaseImpl implements CreateClientUseCase {
 		Client client = new Client(input.name(), input.cpf(), input.birthDate(), balance, user);
 
 		if (clientRepositoryGateway.findByCpf(client.getCpf()).isPresent()) {
-			throw new ObjectAlreadyExists("Usuário já cadastrado com esse CPF.");
+			throw new ObjectAlreadyExistsException("Usuário já cadastrado com esse CPF.");
 		}
 
 		Client createdClient = clientRepositoryGateway.create(client);
