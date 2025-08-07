@@ -6,7 +6,7 @@ import com.dunnas.desafio.components.client.domain.models.Client;
 
 public interface ClientRepositoryGateway {
 
-    Client create(Client Client);
+    Client create(Client client);
 
     Optional<Client> findById(Long id);
 

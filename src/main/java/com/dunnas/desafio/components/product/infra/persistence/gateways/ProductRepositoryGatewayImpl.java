@@ -1,5 +1,6 @@
 package com.dunnas.desafio.components.product.infra.persistence.gateways;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -57,6 +58,14 @@ public class ProductRepositoryGatewayImpl implements ProductRepositoryGateway{
 	@Override
 	public boolean existsById(Long id) {
 		return repository.existsById(id);
+	}
+
+	@Override
+	public List<Product> findAllById(List<Long> ids) {
+	    List<ProductEntity> entities = repository.findAllById(ids);
+	    return entities.stream()
+	                   .map(mapper::entityToModel)
+	                   .toList();
 	}
 
 }

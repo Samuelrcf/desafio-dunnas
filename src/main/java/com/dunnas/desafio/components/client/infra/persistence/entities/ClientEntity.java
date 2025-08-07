@@ -2,7 +2,9 @@ package com.dunnas.desafio.components.client.infra.persistence.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
+import com.dunnas.desafio.components.order.infra.persistence.entities.OrderEntity;
 import com.dunnas.desafio.components.user.infra.persistence.entities.UserEntity;
 
 import jakarta.persistence.CascadeType;
@@ -11,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -34,4 +37,7 @@ public class ClientEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private UserEntity userEntity;
+	
+	@OneToMany(mappedBy = "clientEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<OrderEntity> orderEntities;
 }

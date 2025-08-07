@@ -3,6 +3,7 @@ package com.dunnas.desafio.components.supplier.domain.models;
 import java.util.List;
 import java.util.Objects;
 
+import com.dunnas.desafio.components.order.domain.models.Order;
 import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.components.user.domain.models.User;
 
@@ -12,6 +13,7 @@ public class Supplier {
 	private String name;
 	private String cnpj;
 	private List<Product> products;
+	private List<Order> orders;
 	private User user;
 	
 	public Supplier(Long id, String name, String cnpj, List<Product> products, User user) {
@@ -73,6 +75,14 @@ public class Supplier {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.dunnas.desafio.components.supplier.infra.persistence.entities;
 
 import java.util.List;
 
+import com.dunnas.desafio.components.order.infra.persistence.entities.OrderEntity;
 import com.dunnas.desafio.components.product.infra.persistence.entities.ProductEntity;
 import com.dunnas.desafio.components.user.infra.persistence.entities.UserEntity;
 
@@ -36,4 +37,7 @@ public class SupplierEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private UserEntity userEntity;
+	
+	@OneToMany(mappedBy = "supplierEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<OrderEntity> orderEntities;
 }

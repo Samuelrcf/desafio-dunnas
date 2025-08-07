@@ -1,5 +1,8 @@
 package com.dunnas.desafio.components.product.infra.persistence.mappers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.dunnas.desafio.components.product.domain.models.Product;
@@ -37,6 +40,26 @@ public class ProductEntityMapper {
             entity.getPrice(),
             supplierEntityMapper.entityToModel(entity.getSupplierEntity())
         );
+    }
+    
+    public List<ProductEntity> modelListToEntityList (List<Product> products){
+    	List<ProductEntity> productEntities = new ArrayList<>();
+    	for(Product product : products) {
+    		ProductEntity productEntity = modelToEntity(product);
+    		productEntities.add(productEntity);
+    	}
+    	
+    	return productEntities;
+    }
+    
+    public List<Product> entityListToModelList (List<ProductEntity> productsEntities){
+    	List<Product> products = new ArrayList<>();
+    	for(ProductEntity product : productsEntities) {
+    		Product productEntity = entityToModel(product);
+    		products.add(productEntity);
+    	}
+    	
+    	return products;
     }
 
 }

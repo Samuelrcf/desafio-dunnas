@@ -2,8 +2,10 @@ package com.dunnas.desafio.components.client.domain.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
+import com.dunnas.desafio.components.order.domain.models.Order;
 import com.dunnas.desafio.components.user.domain.models.User;
 
 public class Client {
@@ -14,7 +16,19 @@ public class Client {
 	private LocalDate birthDate;
 	private BigDecimal balance;
 	private User user;
+	private List<Order> orders;
 	
+	public Client(Long id, String name, String cpf, LocalDate birthDate, BigDecimal balance, User user,
+			List<Order> orders) {
+		this.id = id;
+		this.name = name;
+		this.cpf = cpf;
+		this.birthDate = birthDate;
+		this.balance = balance;
+		this.user = user;
+		this.setOrders(orders);
+	}
+
 	public Client(Long id, String name, String cpf, LocalDate birthDate, BigDecimal balance, User user) {
 		this.id = id;
 		this.name = name;
@@ -83,6 +97,14 @@ public class Client {
 	@Override
 	public int hashCode() {
 		return Objects.hash(balance, birthDate, cpf, id, name);
+	}
+	
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 
 	@Override

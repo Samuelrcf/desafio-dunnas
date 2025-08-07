@@ -26,7 +26,7 @@ public class AddCreditUseCaseImpl implements AddCreditUseCase {
 		
 		//ClientEntity clientEntity = clientRepository.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado"));
 		
-		Client client = clientRepositoryGateway.findById(102L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); //excluir
+		Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); //excluir
 		
 		client.setBalance(input.amount());
 		
