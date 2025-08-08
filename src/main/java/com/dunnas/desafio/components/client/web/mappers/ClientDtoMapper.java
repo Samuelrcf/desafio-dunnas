@@ -1,14 +1,19 @@
 package com.dunnas.desafio.components.client.web.mappers;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.dunnas.desafio.components.client.application.usecases.inputs.AddCreditUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.inputs.CreateClientUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.AddCreditUseCaseOutput;
+import com.dunnas.desafio.components.client.application.usecases.outputs.CheckHistoryUseCaseOutput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CreateClientUseCaseOutput;
 import com.dunnas.desafio.components.client.web.dtos.AddCreditDto;
 import com.dunnas.desafio.components.client.web.dtos.CreateClientDto;
+import com.dunnas.desafio.components.client.web.dtos.OrderDto;
 import com.dunnas.desafio.components.client.web.dtos.ReadClientDto;
+import com.dunnas.desafio.components.client.web.dtos.ProductDto;
 import com.dunnas.desafio.components.user.application.usecases.inputs.CreateUserInput;
 import com.dunnas.desafio.components.user.web.dtos.ReadUserDto;
 import com.dunnas.desafio.components.user.web.mappers.UserDtoMapper;
@@ -46,4 +51,18 @@ public class ClientDtoMapper {
 		
 		return new ReadClientDto(output.id(), output.name(), output.cpf(), output.birthDate(), output.balance(), readUserDto);
 	}
+	
+    public OrderDto checkHistoryUseCaseOutputToOrderDto(CheckHistoryUseCaseOutput output) {
+        List<ProductDto> productDtos = output.products().stream()
+            .map(p -> new ProductDto(p.id(), p.name(), p.description(), p.price()))
+            .toList();
+
+        return new OrderDto(
+            output.orderCode(),
+            output.supplierName(),
+            productDtos,
+            output.total(),
+            output.creationDate()
+        );
+    }
 }

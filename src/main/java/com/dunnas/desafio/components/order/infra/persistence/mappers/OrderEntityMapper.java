@@ -36,11 +36,10 @@ public class OrderEntityMapper {
 	    entity.setTotal(order.getTotal());
 	    entity.setOrderCode(order.getOrderCode());
 
-	    // Mapeia os itens e seta a referência de volta para o pedido
 	    List<OrderItemEntity> itemEntities = new ArrayList<>();
 	    for (OrderItem item : order.getOrderItems()) {
 	        OrderItemEntity itemEntity = orderItemEntityMapper.modelToEntity(item);
-	        itemEntity.setOrderEntity(entity); // <-- ESSENCIAL
+	        itemEntity.setOrderEntity(entity); 
 	        itemEntities.add(itemEntity);
 	    }
 
@@ -62,6 +61,15 @@ public class OrderEntityMapper {
             entity.getOrderCode(),
             orderItemEntityMapper.entityListToModelList(entity.getItems())
         );
+    }
+    
+    public List<Order> entityListToModelList(List<OrderEntity> orderEntities){
+    	List<Order> orders = new ArrayList<>();
+    	for(OrderEntity entity : orderEntities) {
+    		Order order = entityToModel(entity);
+    		orders.add(order);
+    	}
+    	return orders;
     }
 
 }

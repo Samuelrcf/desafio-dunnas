@@ -8,17 +8,21 @@ import com.dunnas.desafio.components.client.application.usecases.AddCreditUseCas
 import com.dunnas.desafio.components.client.application.usecases.inputs.AddCreditUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.AddCreditUseCaseOutput;
 import com.dunnas.desafio.components.client.domain.models.Client;
+import com.dunnas.desafio.shared.audit.CurrentUserProvider;
 import com.dunnas.desafio.shared.exceptions.ObjectNotFoundException;
+import com.dunnas.desafio.shared.exceptions.UnauthorizedException;
 
 public class AddCreditUseCaseImpl implements AddCreditUseCase {
 
 	private final ClientRepositoryGateway clientRepositoryGateway;
 	private final ClientDomainMapper clientDomainMapper;
+	private final CurrentUserProvider currentUserProvider;
 
 	public AddCreditUseCaseImpl(ClientRepositoryGateway clientRepositoryGateway,
-			ClientDomainMapper clientDomainMapper) {
+			ClientDomainMapper clientDomainMapper, CurrentUserProvider currentUserProvider) {
 		this.clientRepositoryGateway = clientRepositoryGateway;
 		this.clientDomainMapper = clientDomainMapper;
+		this.currentUserProvider = currentUserProvider;
 	}
 
 	@Override
@@ -26,9 +30,9 @@ public class AddCreditUseCaseImpl implements AddCreditUseCase {
 
 		//Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
 		
-		//ClientEntity clientEntity = clientRepository.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado"));
+		//Client client = clientRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-		Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); //excluir
+		Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado")); //excluir
 
 	    BigDecimal newBalance = client.getBalance().add(input.amount());
 	    client.setBalance(newBalance);

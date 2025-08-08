@@ -3,6 +3,8 @@ package com.dunnas.desafio.components.client.application.gateways;
 import java.util.Optional;
 
 import com.dunnas.desafio.components.client.domain.models.Client;
+import com.dunnas.desafio.components.order.domain.models.Order;
+import com.dunnas.desafio.shared.response.PaginationResult;
 
 public interface ClientRepositoryGateway {
 
@@ -14,4 +16,5 @@ public interface ClientRepositoryGateway {
     
     boolean existsById(Long id);
 
+    PaginationResult<Order> getHistory(Long clientId, int page, int size);
 }

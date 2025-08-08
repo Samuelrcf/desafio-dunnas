@@ -1,7 +1,12 @@
 package com.dunnas.desafio.components.supplier.web.mappers;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
+import com.dunnas.desafio.components.supplier.application.usecases.outputs.CheckHistoryUseCaseOutput;
+import com.dunnas.desafio.components.supplier.web.dtos.OrderDto;
+import com.dunnas.desafio.components.supplier.web.dtos.ProductDto;
 import com.dunnas.desafio.components.supplier.application.usecases.inputs.CreateSupplierUseCaseInput;
 import com.dunnas.desafio.components.supplier.application.usecases.outputs.CreateSupplierUseCaseOutput;
 import com.dunnas.desafio.components.supplier.web.dtos.CreateSupplierDto;
@@ -30,4 +35,18 @@ public class SupplierDtoMapper {
 
 		return new ReadSupplierDto(output.id(), output.name(), output.cnpj(), readUserDto);
 	}
+	
+    public OrderDto checkHistoryUseCaseOutputToOrderDto(CheckHistoryUseCaseOutput output) {
+        List<ProductDto> productDtos = output.products().stream()
+            .map(p -> new ProductDto(p.id(), p.name(), p.description(), p.price()))
+            .toList();
+
+        return new OrderDto(
+            output.orderCode(),
+            output.clientName(),
+            productDtos,
+            output.total(),
+            output.creationDate()
+        );
+    }
 }

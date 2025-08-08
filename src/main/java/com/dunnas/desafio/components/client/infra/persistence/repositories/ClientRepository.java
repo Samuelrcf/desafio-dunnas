@@ -9,4 +9,5 @@ import com.dunnas.desafio.components.client.infra.persistence.entities.ClientEnt
 public interface ClientRepository extends JpaRepository<ClientEntity, Long>{
 
 	Optional<ClientEntity> findByCpf(String cpf);
+	
 }
