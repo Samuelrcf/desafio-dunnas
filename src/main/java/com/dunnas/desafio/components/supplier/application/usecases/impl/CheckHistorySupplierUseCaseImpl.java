@@ -9,6 +9,8 @@ import com.dunnas.desafio.components.supplier.application.usecases.CheckHistoryS
 import com.dunnas.desafio.components.supplier.application.usecases.outputs.CheckHistoryUseCaseOutput;
 import com.dunnas.desafio.components.supplier.domain.models.Supplier;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
+import com.dunnas.desafio.shared.exceptions.ObjectNotFoundException;
+import com.dunnas.desafio.shared.exceptions.UnauthorizedException;
 import com.dunnas.desafio.shared.response.PaginationResult;
 
 public class CheckHistorySupplierUseCaseImpl implements CheckHistorySupplierUseCase{
@@ -27,12 +29,11 @@ public class CheckHistorySupplierUseCaseImpl implements CheckHistorySupplierUseC
 	@Override
 	public PaginationResult<CheckHistoryUseCaseOutput> execute(int page, int size) throws Exception {
 		
-		//Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
+		Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
 		
-		//Supplier supplier = supplierRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+		Supplier supplier = supplierRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-	    Supplier supplier = supplierRepositoryGateway.findById(1L)
-	            .orElseThrow(() -> new Exception("Usuário não encontrado."));
+		//Supplier supplier = supplierRepositoryGateway.findById(1L).orElseThrow(() -> new Exception("Usuário não encontrado."));
 
 	    PaginationResult<Order> ordersPage = supplierRepositoryGateway.getHistory(supplier.getId(), page, size);
 

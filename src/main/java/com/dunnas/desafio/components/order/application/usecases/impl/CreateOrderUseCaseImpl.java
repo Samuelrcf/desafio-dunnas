@@ -25,6 +25,7 @@ import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.components.supplier.domain.models.Supplier;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
 import com.dunnas.desafio.shared.exceptions.ObjectNotFoundException;
+import com.dunnas.desafio.shared.exceptions.UnauthorizedException;
 
 public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 
@@ -46,8 +47,12 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 
 	@Override
 	public List<CreateOrderUseCaseOutput> execute(CreateOrderUseCaseInput input) throws Exception {
-	    Client client = clientRepositoryGateway.findById(1L)
-	        .orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); // simulado
+		
+		Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
+		
+		Client client = clientRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+		
+		//Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); // simulado
 
 	    // 1. Buscar todos os produtos
 	    List<Long> productIds = input.products().stream()

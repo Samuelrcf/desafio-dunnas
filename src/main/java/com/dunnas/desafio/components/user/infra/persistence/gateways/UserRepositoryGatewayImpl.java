@@ -2,6 +2,9 @@ package com.dunnas.desafio.components.user.infra.persistence.gateways;
 
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
+import com.dunnas.desafio.components.user.application.gateways.UserRepositoryGateway;
 import com.dunnas.desafio.components.user.domain.models.User;
 import com.dunnas.desafio.components.user.infra.persistence.entities.UserEntity;
 import com.dunnas.desafio.components.user.infra.persistence.mappers.UserEntityMapper;
@@ -9,9 +12,8 @@ import com.dunnas.desafio.components.user.infra.persistence.repositories.UserRep
 
 import lombok.RequiredArgsConstructor;
 
-import com.dunnas.desafio.components.user.application.gateways.UserRepositoryGateway;
-
 @RequiredArgsConstructor
+@Component
 public class UserRepositoryGatewayImpl implements UserRepositoryGateway{
 
     private final UserRepository repository;

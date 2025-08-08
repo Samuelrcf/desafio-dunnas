@@ -28,11 +28,11 @@ public class AddCreditUseCaseImpl implements AddCreditUseCase {
 	@Override
 	public AddCreditUseCaseOutput execute(AddCreditUseCaseInput input) throws Exception {
 
-		//Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
+		Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
 		
-		//Client client = clientRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+		Client client = clientRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-		Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado")); //excluir
+		//Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado")); //excluir
 
 	    BigDecimal newBalance = client.getBalance().add(input.amount());
 	    client.setBalance(newBalance);

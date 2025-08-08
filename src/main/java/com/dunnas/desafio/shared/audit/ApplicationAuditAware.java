@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.dunnas.desafio.components.user.domain.models.User;
+import com.dunnas.desafio.components.user.infra.persistence.entities.UserEntity;
 
 @Component
 public class ApplicationAuditAware implements AuditorAware<Long>, CurrentUserProvider {
@@ -19,7 +19,7 @@ public class ApplicationAuditAware implements AuditorAware<Long>, CurrentUserPro
         if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             return Optional.empty();
         }
-        User userPrincipal = (User) auth.getPrincipal();
+        UserEntity userPrincipal = (UserEntity) auth.getPrincipal();
         return Optional.ofNullable(userPrincipal.getId());
     }
 

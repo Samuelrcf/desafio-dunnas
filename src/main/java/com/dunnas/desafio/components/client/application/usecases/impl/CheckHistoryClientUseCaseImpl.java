@@ -9,6 +9,8 @@ import com.dunnas.desafio.components.client.application.usecases.outputs.CheckHi
 import com.dunnas.desafio.components.client.domain.models.Client;
 import com.dunnas.desafio.components.order.domain.models.Order;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
+import com.dunnas.desafio.shared.exceptions.ObjectNotFoundException;
+import com.dunnas.desafio.shared.exceptions.UnauthorizedException;
 import com.dunnas.desafio.shared.response.PaginationResult;
 
 public class CheckHistoryClientUseCaseImpl implements CheckHistoryClientUseCase{
@@ -27,12 +29,11 @@ public class CheckHistoryClientUseCaseImpl implements CheckHistoryClientUseCase{
 	@Override
 	public PaginationResult<CheckHistoryUseCaseOutput> execute(int page, int size) throws Exception {
 		
-		//Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
+		Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
 		
-		//Client client = clientRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+		Client client = clientRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-	    Client client = clientRepositoryGateway.findById(1L)
-	            .orElseThrow(() -> new Exception("Cliente não encontrado."));
+		//Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new Exception("Cliente não encontrado."));
 
 	    PaginationResult<Order> ordersPage = clientRepositoryGateway.getHistory(client.getId(), page, size);
 

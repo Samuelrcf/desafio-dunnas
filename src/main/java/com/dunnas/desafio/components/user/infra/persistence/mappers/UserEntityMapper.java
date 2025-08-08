@@ -25,7 +25,7 @@ public class UserEntityMapper {
 
         return new User(
             entity.getId(),
-            entity.getUserName(),
+            entity.getUsername(),
             entity.getPassword(),
             entity.getRole()
         );

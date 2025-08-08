@@ -7,12 +7,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import com.dunnas.desafio.components.client.domain.models.Client;
-import com.dunnas.desafio.components.client.infra.persistence.entities.ClientEntity;
-import com.dunnas.desafio.components.order.infra.persistence.entities.OrderItemEntity;
 import com.dunnas.desafio.components.product.domain.models.Product;
-import com.dunnas.desafio.components.product.infra.persistence.entities.ProductEntity;
 import com.dunnas.desafio.components.supplier.domain.models.Supplier;
-import com.dunnas.desafio.components.supplier.infra.persistence.entities.SupplierEntity;
 
 public class Order {
 
