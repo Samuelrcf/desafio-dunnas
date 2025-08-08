@@ -2,6 +2,7 @@ package com.dunnas.desafio.shared.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -12,5 +13,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**").allowedMethods("*")
                 .allowedOriginPatterns("*")
                 .allowCredentials(true);
+    }
+    
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        registry.jsp("/WEB-INF/views/", ".jsp");
     }
 }

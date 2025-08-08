@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/users/**").permitAll()
+                        //.requestMatchers("/users/**", "/register").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/clients/history").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/clients", "/suppliers").permitAll()
@@ -65,7 +65,7 @@ public class SecurityConfig {
 			    		
 			    		.requestMatchers(HttpMethod.POST, "/products").hasRole("SUPPLIER")
 			    		
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
