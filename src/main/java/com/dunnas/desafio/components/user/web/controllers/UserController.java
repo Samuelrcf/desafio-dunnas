@@ -22,7 +22,7 @@ public class UserController {
 	
     private final UserDtoMapper mapper;
     private final AuthenticationUseCase authenticationUseCase;
-
+    
     @PostMapping("/auth/login")
     public String login(@Valid LoginDto loginDto, HttpServletResponse response, RedirectAttributes redirectAttributes) {
         try {

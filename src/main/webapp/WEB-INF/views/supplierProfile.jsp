@@ -61,8 +61,8 @@
     </div>
 
     <div class="buttons">
-        <a href="${pageContext.request.contextPath}/orders" class="button-link">Visualizar Histórico de Pedidos</a>
-        <a href="${pageContext.request.contextPath}/produtos" class="button-link">Visualizar Produtos</a>
+        <a href="${pageContext.request.contextPath}/suppliers/orders" class="button-link">Visualizar Histórico de Pedidos</a>
+        <a href="${pageContext.request.contextPath}/suppliers/produtos" class="button-link">Visualizar Produtos</a>
         <!-- Adicione outras ações específicas do fornecedor aqui -->
     </div>
 </div>

@@ -80,6 +80,16 @@
         #message.error {
             color: red;
         }
+		#message {
+		    margin-top: 15px;
+		    font-weight: bold;
+		    opacity: 1;
+		    transition: opacity 1.5s ease;
+		}
+
+		#message.fade-out {
+		    opacity: 0;
+		}
     </style>
 </head>
 <body>
@@ -112,8 +122,8 @@
     </div>
 
     <div class="buttons">
-        <a href="${pageContext.request.contextPath}/orders" class="button-link">Visualizar Histórico de Pedidos</a>
-        <a href="${pageContext.request.contextPath}/produtos" class="button-link">Visualizar Produtos Disponíveis</a>
+        <a href="${pageContext.request.contextPath}/clients/orders" class="button-link">Visualizar Histórico de Pedidos</a>
+        <a href="${pageContext.request.contextPath}/clients/produtos" class="button-link">Visualizar Produtos Disponíveis</a>
     </div>
 
     <div id="addCreditSection">

@@ -8,7 +8,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dunnas.desafio.components.supplier.application.usecases.CheckHistorySupplierUseCase;
@@ -32,13 +35,15 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
+@RequestMapping("/suppliers")
 public class SupplierController {
 	
     private final SupplierDtoMapper mapper;
     private final CreateSupplierUseCase createUseCase;
-    private final CheckHistorySupplierUseCase checkHistoryUseCase;
     private final FetchSupplierInfoUseCase fetchSupplierInfoUseCase;
+    private final CheckHistorySupplierUseCase checkHistoryUseCase;
 
+    @PostMapping
     public ResponseEntity<ApiSuccessResponse<ReadSupplierDto>> create(@Valid @RequestBody CreateSupplierDto createSupplierDto, HttpServletRequest request) throws Exception {
 
         CreateSupplierUseCaseInput input = mapper.createDtoToCreateUseCaseInput(createSupplierDto);
@@ -49,6 +54,7 @@ public class SupplierController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
+	@GetMapping("/history")
 	public ResponseEntity<ApiSuccessResponse<Page<OrderDto>>> checkHistory(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, HttpServletRequest request) throws Exception {
 
@@ -64,6 +70,7 @@ public class SupplierController {
 		return ResponseEntity.ok(response);
 	}
 	
+	@GetMapping
 	public ResponseEntity<ApiSuccessResponse<ReadSupplierDto>> fetchSupplierInfo(HttpServletRequest request) throws Exception {
 		
 		FetchSupplierInfoUseCaseOutput output = fetchSupplierInfoUseCase.execute();

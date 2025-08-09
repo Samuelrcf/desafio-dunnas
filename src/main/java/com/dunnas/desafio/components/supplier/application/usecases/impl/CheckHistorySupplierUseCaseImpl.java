@@ -33,8 +33,6 @@ public class CheckHistorySupplierUseCaseImpl implements CheckHistorySupplierUseC
 		
 		Supplier supplier = supplierRepositoryGateway.findByUserEntityId(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-		//Supplier supplier = supplierRepositoryGateway.findById(1L).orElseThrow(() -> new Exception("Usuário não encontrado."));
-
 	    PaginationResult<Order> ordersPage = supplierRepositoryGateway.getHistory(supplier.getId(), page, size);
 
 	    List<CheckHistoryUseCaseOutput> outputList = ordersPage.getContent().stream()
