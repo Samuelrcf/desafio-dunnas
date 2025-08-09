@@ -1,4 +1,4 @@
-package com.dunnas.desafio.shared.controllers;
+package com.dunnas.desafio.controllers;
 
 import java.time.LocalDate;
 

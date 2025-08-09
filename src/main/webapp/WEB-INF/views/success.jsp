@@ -3,6 +3,6 @@
 <head><title>Sucesso</title></head>
 <body>
     <h2>${successMessage}</h2>
-    <a href="/register">Voltar</a>
+    <a href="/login">Voltar</a>
 </body>
 </html>

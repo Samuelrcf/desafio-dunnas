@@ -37,6 +37,10 @@ public class CreateClientUseCaseImpl implements CreateClientUseCase {
 		if (clientRepositoryGateway.findByCpf(client.getCpf()).isPresent()) {
 			throw new ObjectAlreadyExistsException("Usuário já cadastrado com esse CPF.");
 		}
+		
+		if (clientRepositoryGateway.findByCpf(client.getUser().getUserName()).isPresent()) {
+			throw new ObjectAlreadyExistsException("Usuário já cadastrado com esse login.");
+		}
 
 		Client createdClient = clientRepositoryGateway.create(client);
 		return clientDomainMapper.domainToCreateClientUseCaseOutput(createdClient);
