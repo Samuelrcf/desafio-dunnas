@@ -56,7 +56,6 @@ public class SecurityConfig {
                         //.requestMatchers("/users/**", "/register").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/clients/history").hasRole("CLIENT")
-                        .requestMatchers(HttpMethod.POST, "/clients", "/suppliers").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/clients/credit").hasRole("CLIENT")
                         
                         .requestMatchers(HttpMethod.GET, "/suppliers/history").hasRole("SUPPLIER")

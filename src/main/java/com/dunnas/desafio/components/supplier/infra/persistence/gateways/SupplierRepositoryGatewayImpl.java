@@ -51,6 +51,20 @@ public class SupplierRepositoryGatewayImpl implements SupplierRepositoryGateway{
         
         return Optional.empty();
 	}
+	
+	@Override
+	public Optional<Supplier> findByUserEntityId(Long id) {
+		Optional<SupplierEntity> optionalEntity = repository.findByUserEntityId(id);
+		
+		if (optionalEntity.isPresent()) {
+			SupplierEntity entity = optionalEntity.get();
+			Supplier model = mapper.entityToModel(entity);
+			
+			return Optional.of(model);
+		}
+		
+		return Optional.empty();
+	}
 
 	@Override
 	public Optional<Supplier> findByCnpj(String cnpj) {
@@ -74,7 +88,7 @@ public class SupplierRepositoryGatewayImpl implements SupplierRepositoryGateway{
 	@Override
 	public PaginationResult<Order> getHistory(Long supplierId, int page, int size) {
 	    Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-	    Page<OrderEntity> pageResult = orderRepository.findByClientEntityId(supplierId, pageable);
+	    Page<OrderEntity> pageResult = orderRepository.findBySupplierEntityId(supplierId, pageable);
 	    List<Order> orders = pageResult.getContent().stream().map(orderMapper::entityToModel).toList();
 	    return new PaginationResult<>(orders, pageResult.getTotalElements());
 	}

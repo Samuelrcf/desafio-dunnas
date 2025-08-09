@@ -57,7 +57,7 @@
 <body>
 <div class="login-container">
     <h2>Login</h2>
-    <form method="post" action="/users/auth/login">
+    <form id="loginForm" method="post" action="/users/auth/login">
         <input type="text" name="userName" placeholder="Usuário" required />
         <input type="password" name="password" placeholder="Senha" required />
         <button type="submit">Entrar</button>

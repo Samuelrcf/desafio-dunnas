@@ -7,22 +7,23 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.dunnas.desafio.components.client.application.usecases.AddCreditUseCase;
 import com.dunnas.desafio.components.client.application.usecases.CheckHistoryClientUseCase;
 import com.dunnas.desafio.components.client.application.usecases.CreateClientUseCase;
+import com.dunnas.desafio.components.client.application.usecases.FetchClientInfoUseCase;
 import com.dunnas.desafio.components.client.application.usecases.inputs.AddCreditUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.inputs.CreateClientUseCaseInput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.AddCreditUseCaseOutput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CheckHistoryUseCaseOutput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CreateClientUseCaseOutput;
+import com.dunnas.desafio.components.client.application.usecases.outputs.FetchClientInfoUseCaseOutput;
 import com.dunnas.desafio.components.client.web.dtos.AddCreditDto;
 import com.dunnas.desafio.components.client.web.dtos.CreateClientDto;
 import com.dunnas.desafio.components.client.web.dtos.OrderDto;
@@ -37,12 +38,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/clients")
+@Controller
 public class ClientController {
 
 	private final ClientDtoMapper mapper;
 	private final CreateClientUseCase createClientUseCase;
+	private final FetchClientInfoUseCase fetchClientInfoUseCase;
 	private final AddCreditUseCase addCreditUseCase;
 	private final CheckHistoryClientUseCase checkHistoryUseCase;
 
@@ -86,6 +87,17 @@ public class ClientController {
 				pageResult, System.currentTimeMillis(), request.getRequestURI());
 
 		return ResponseEntity.ok(response);
+	}
+	
+	public ResponseEntity<ApiSuccessResponse<ReadClientDto>> fetchClientInfo(HttpServletRequest request) throws Exception {
+		
+		FetchClientInfoUseCaseOutput output = fetchClientInfoUseCase.execute();
+		
+		ReadClientDto readDto = mapper.fetchClientInfoUseCaseOutputToReadDto(output);
+		
+		ApiSuccessResponse<ReadClientDto> response = ResponseUtil.success(readDto, "Busca bem-sucedida.",
+				request.getRequestURI());
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

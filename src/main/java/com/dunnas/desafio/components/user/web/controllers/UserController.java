@@ -1,13 +1,13 @@
 package com.dunnas.desafio.components.user.web.controllers;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dunnas.desafio.components.user.application.usecases.AuthenticationUseCase;
 import com.dunnas.desafio.components.user.application.usecases.inputs.AuthenticationUseCaseInput;
+import com.dunnas.desafio.components.user.domain.models.User;
 import com.dunnas.desafio.components.user.web.dtos.LoginDto;
 import com.dunnas.desafio.components.user.web.mappers.UserDtoMapper;
 
@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-@RestController
+@Controller
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
@@ -23,12 +23,23 @@ public class UserController {
     private final UserDtoMapper mapper;
     private final AuthenticationUseCase authenticationUseCase;
 
-	@PostMapping("/auth/login")
-	public ResponseEntity<Void> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) throws Exception {
-		
-        AuthenticationUseCaseInput input = mapper.loginDtoToAuthenticationUseCaseInput(loginDto);
-        authenticationUseCase.execute(input, response);
+    @PostMapping("/auth/login")
+    public String login(@Valid LoginDto loginDto, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+        try {
+            AuthenticationUseCaseInput input = mapper.loginDtoToAuthenticationUseCaseInput(loginDto);
+            User user = authenticationUseCase.execute(input, response); 
 
-        return ResponseEntity.ok().build();
-	}
+            if (user.getRole().equalsIgnoreCase("CLIENT")) {
+                return "redirect:/clients/info"; 
+            } else if (user.getRole().equalsIgnoreCase("SUPPLIER")) {
+                return "redirect:/suppliers/info"; 
+            } else {
+                return "redirect:/";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Usuário ou senha inválidos");
+            return "redirect:/login";
+        }
+    }
+
 }

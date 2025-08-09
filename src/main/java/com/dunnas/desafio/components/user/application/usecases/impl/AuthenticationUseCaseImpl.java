@@ -6,6 +6,7 @@ import com.dunnas.desafio.components.user.application.usecases.AuthenticationUse
 import com.dunnas.desafio.components.user.application.usecases.inputs.AuthenticationUseCaseInput;
 import com.dunnas.desafio.components.user.domain.models.User;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class AuthenticationUseCaseImpl implements AuthenticationUseCase {
@@ -18,9 +19,19 @@ public class AuthenticationUseCaseImpl implements AuthenticationUseCase {
 		this.tokenProvider = tokenProvider;
 	}
 
-	public void execute(AuthenticationUseCaseInput input, HttpServletResponse response) throws Exception {
+    public User execute(AuthenticationUseCaseInput input, HttpServletResponse response) throws Exception {
         User user = authenticationService.authenticate(input.userName(), input.password());
         String token = tokenProvider.generateToken(user);
-        response.setHeader("Authorization", token);
+        
+        Cookie cookie = new Cookie("Authorization", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); 
+        cookie.setPath("/"); 
+        cookie.setMaxAge(60 * 60 * 24); 
+        
+        response.addCookie(cookie);
+        
+        return user;
     }
+
 }

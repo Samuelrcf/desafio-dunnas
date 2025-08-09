@@ -5,11 +5,13 @@ import java.util.List;
 import com.dunnas.desafio.components.client.application.usecases.outputs.AddCreditUseCaseOutput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CheckHistoryUseCaseOutput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.CreateClientUseCaseOutput;
+import com.dunnas.desafio.components.client.application.usecases.outputs.FetchClientInfoUseCaseOutput;
 import com.dunnas.desafio.components.client.application.usecases.outputs.ProductOutput;
 import com.dunnas.desafio.components.client.domain.models.Client;
 import com.dunnas.desafio.components.order.domain.models.Order;
 import com.dunnas.desafio.components.user.application.mappers.UserDomainMapper;
 import com.dunnas.desafio.components.user.application.usecases.outputs.CreateUserOutput;
+import com.dunnas.desafio.components.user.application.usecases.outputs.FetchUserOutput;
 
 public class ClientDomainMapper {
 	private final UserDomainMapper userDomainMapper;
@@ -19,14 +21,14 @@ public class ClientDomainMapper {
 	}
 
 	public CreateClientUseCaseOutput domainToCreateClientUseCaseOutput(Client domain) {
-		CreateUserOutput userOutput = userDomainMapper.domainToOutput(domain.getUser());
+		CreateUserOutput userOutput = userDomainMapper.domainToCreateUserOutput(domain.getUser());
 
 		return new CreateClientUseCaseOutput(domain.getId(), domain.getName(), domain.getCpf(), domain.getBirthDate(),
 				domain.getBalance(), userOutput);
 	}
 
 	public AddCreditUseCaseOutput domainToAddCreditUseCaseOutput(Client domain) {
-		CreateUserOutput userOutput = userDomainMapper.domainToOutput(domain.getUser());
+		CreateUserOutput userOutput = userDomainMapper.domainToCreateUserOutput(domain.getUser());
 
 		return new AddCreditUseCaseOutput(domain.getId(), domain.getName(), domain.getCpf(), domain.getBirthDate(),
 				domain.getBalance(), userOutput);
@@ -39,4 +41,13 @@ public class ClientDomainMapper {
 		return new CheckHistoryUseCaseOutput(order.getOrderCode(), order.getSupplier().getName(), products,
 				order.getTotal(), order.getCreationDate());
 	}
+	
+	
+	public FetchClientInfoUseCaseOutput domainToFetchClientInfoUseCaseOutput(Client domain) {
+		
+		FetchUserOutput fetchUserOutput = userDomainMapper.domainToFetchUserOutput(domain.getUser());
+		
+		return new FetchClientInfoUseCaseOutput(domain.getId(), domain.getName(), domain.getCpf(), domain.getBirthDate(), domain.getBalance(), fetchUserOutput);
+	}
+
 }

@@ -7,20 +7,19 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.dunnas.desafio.components.supplier.application.usecases.outputs.CheckHistoryUseCaseOutput;
-import com.dunnas.desafio.components.supplier.web.dtos.OrderDto;
 import com.dunnas.desafio.components.supplier.application.usecases.CheckHistorySupplierUseCase;
 import com.dunnas.desafio.components.supplier.application.usecases.CreateSupplierUseCase;
+import com.dunnas.desafio.components.supplier.application.usecases.FetchSupplierInfoUseCase;
 import com.dunnas.desafio.components.supplier.application.usecases.inputs.CreateSupplierUseCaseInput;
+import com.dunnas.desafio.components.supplier.application.usecases.outputs.CheckHistoryUseCaseOutput;
 import com.dunnas.desafio.components.supplier.application.usecases.outputs.CreateSupplierUseCaseOutput;
+import com.dunnas.desafio.components.supplier.application.usecases.outputs.FetchSupplierInfoUseCaseOutput;
 import com.dunnas.desafio.components.supplier.web.dtos.CreateSupplierDto;
+import com.dunnas.desafio.components.supplier.web.dtos.OrderDto;
 import com.dunnas.desafio.components.supplier.web.dtos.ReadSupplierDto;
 import com.dunnas.desafio.components.supplier.web.mappers.SupplierDtoMapper;
 import com.dunnas.desafio.shared.response.ApiSuccessResponse;
@@ -32,15 +31,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/suppliers")
+@Controller
 public class SupplierController {
 	
     private final SupplierDtoMapper mapper;
     private final CreateSupplierUseCase createUseCase;
     private final CheckHistorySupplierUseCase checkHistoryUseCase;
+    private final FetchSupplierInfoUseCase fetchSupplierInfoUseCase;
 
-    @PostMapping
     public ResponseEntity<ApiSuccessResponse<ReadSupplierDto>> create(@Valid @RequestBody CreateSupplierDto createSupplierDto, HttpServletRequest request) throws Exception {
 
         CreateSupplierUseCaseInput input = mapper.createDtoToCreateUseCaseInput(createSupplierDto);
@@ -51,7 +49,6 @@ public class SupplierController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
-	@GetMapping("/history")
 	public ResponseEntity<ApiSuccessResponse<Page<OrderDto>>> checkHistory(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, HttpServletRequest request) throws Exception {
 
@@ -65,5 +62,16 @@ public class SupplierController {
 				pageResult, System.currentTimeMillis(), request.getRequestURI());
 
 		return ResponseEntity.ok(response);
+	}
+	
+	public ResponseEntity<ApiSuccessResponse<ReadSupplierDto>> fetchSupplierInfo(HttpServletRequest request) throws Exception {
+		
+		FetchSupplierInfoUseCaseOutput output = fetchSupplierInfoUseCase.execute();
+		
+		ReadSupplierDto readDto = mapper.fetchSupplierInfoUseCaseOutputToReadDto(output);
+		
+		ApiSuccessResponse<ReadSupplierDto> response = ResponseUtil.success(readDto, "Busca bem-sucedida.",
+				request.getRequestURI());
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

@@ -18,4 +18,6 @@ public interface SupplierRepositoryGateway {
     
     PaginationResult<Order> getHistory(Long supplierId, int page, int size);
 
+	Optional<Supplier> findByUserEntityId(Long currentUserId);
+
 }

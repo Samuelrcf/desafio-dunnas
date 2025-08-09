@@ -48,13 +48,13 @@ public class RegisterPageController {
                     )
             );
 
-            clientController.create(dto, request); // chamada direta para o controller REST
+            clientController.create(dto, request); 
             redirectAttributes.addFlashAttribute("successMessage", "Cliente cadastrado com sucesso.");
-            return "redirect:/success";
+            return "redirect:/register/success";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar cliente: " + e.getMessage());
-            return "redirect:/error";
+            return "redirect:/register/error";
         }
     }
 

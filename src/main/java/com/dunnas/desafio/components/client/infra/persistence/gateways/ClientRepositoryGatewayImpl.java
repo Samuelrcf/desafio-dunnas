@@ -51,6 +51,20 @@ public class ClientRepositoryGatewayImpl implements ClientRepositoryGateway{
         
         return Optional.empty();
 	}
+	
+	@Override
+	public Optional<Client> findByUserEntityId(Long id) {
+		Optional<ClientEntity> optionalEntity = repository.findByUserEntityId(id);
+		
+		if (optionalEntity.isPresent()) {
+			ClientEntity entity = optionalEntity.get();
+			Client model = mapper.entityToModel(entity);
+			
+			return Optional.of(model);
+		}
+		
+		return Optional.empty();
+	}
 
 	@Override
 	public Optional<Client> findByCpf(String cpf) {

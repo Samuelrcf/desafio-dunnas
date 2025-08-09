@@ -11,6 +11,8 @@ public interface ClientRepositoryGateway {
     Client create(Client client);
 
     Optional<Client> findById(Long id);
+    
+    Optional<Client> findByUserEntityId(Long id);
 
     Optional<Client> findByCpf(String cpf);
     

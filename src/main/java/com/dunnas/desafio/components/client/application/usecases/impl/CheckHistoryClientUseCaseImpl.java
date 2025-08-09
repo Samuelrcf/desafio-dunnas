@@ -31,7 +31,7 @@ public class CheckHistoryClientUseCaseImpl implements CheckHistoryClientUseCase{
 		
 		Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
 		
-		Client client = clientRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+		Client client = clientRepositoryGateway.findByUserEntityId(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
 		//Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new Exception("Cliente não encontrado."));
 

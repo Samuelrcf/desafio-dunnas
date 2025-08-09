@@ -8,9 +8,11 @@ import com.dunnas.desafio.components.client.application.mappers.ClientDomainMapp
 import com.dunnas.desafio.components.client.application.usecases.AddCreditUseCase;
 import com.dunnas.desafio.components.client.application.usecases.CheckHistoryClientUseCase;
 import com.dunnas.desafio.components.client.application.usecases.CreateClientUseCase;
+import com.dunnas.desafio.components.client.application.usecases.FetchClientInfoUseCase;
 import com.dunnas.desafio.components.client.application.usecases.impl.AddCreditUseCaseImpl;
 import com.dunnas.desafio.components.client.application.usecases.impl.CheckHistoryClientUseCaseImpl;
 import com.dunnas.desafio.components.client.application.usecases.impl.CreateClientUseCaseImpl;
+import com.dunnas.desafio.components.client.application.usecases.impl.FetchClientInfoUseCaseImpl;
 import com.dunnas.desafio.components.user.application.mappers.UserDomainMapper;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
 import com.dunnas.desafio.shared.security.PasswordHasher;
@@ -31,6 +33,11 @@ public class ClientBeansConfig {
     @Bean
     CheckHistoryClientUseCase checkHistoryClientUseCase(ClientRepositoryGateway clientRepositoryGateway, ClientDomainMapper clientDomainMapper, CurrentUserProvider currentUserProvider) {
     	return new CheckHistoryClientUseCaseImpl(clientRepositoryGateway, clientDomainMapper, currentUserProvider);
+    }
+    
+    @Bean
+    FetchClientInfoUseCase fetchClientInfoUseCase(ClientRepositoryGateway clientRepositoryGateway, ClientDomainMapper clientDomainMapper, CurrentUserProvider currentUserProvider) {
+    	return new FetchClientInfoUseCaseImpl(clientRepositoryGateway, clientDomainMapper, currentUserProvider);
     }
     
     @Bean
