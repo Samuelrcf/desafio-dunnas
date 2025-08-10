@@ -122,8 +122,8 @@
     </div>
 
     <div class="buttons">
-        <a href="${pageContext.request.contextPath}/clients/orders" class="button-link">Visualizar Histórico de Pedidos</a>
-        <a href="${pageContext.request.contextPath}/clients/produtos" class="button-link">Visualizar Produtos Disponíveis</a>
+        <a href="${pageContext.request.contextPath}/clients/history?page=0&size=10" class="button-link">Visualizar Histórico de Pedidos</a>
+        <a href="${pageContext.request.contextPath}/products" class="button-link">Visualizar Produtos Disponíveis</a>
     </div>
 
     <div id="addCreditSection">

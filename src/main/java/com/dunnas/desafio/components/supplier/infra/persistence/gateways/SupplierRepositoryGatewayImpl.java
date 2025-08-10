@@ -93,4 +93,13 @@ public class SupplierRepositoryGatewayImpl implements SupplierRepositoryGateway{
 	    return new PaginationResult<>(orders, pageResult.getTotalElements());
 	}
 
+	@Override
+	public Boolean existsByUserEntityUserName(String name) {
+		return repository.existsByUserEntityUserName(name);
+	}
+
+	@Override
+	public Boolean existsByProductEntityId(Long id) {
+		return repository.existsByProductEntitiesId(id);
+	}
 }

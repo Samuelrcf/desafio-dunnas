@@ -1,165 +1,80 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Histórico de Pedidos - Fornecedor</title>
+    <meta charset="UTF-8" />
+    <title>Histórico de Pedidos Recebidos</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9fafb;
-            padding: 20px;
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
+        th { background-color: #f2f2f2; }
+        .pagination { margin-top: 20px; }
+        .pagination a, .pagination span {
+            padding: 5px 10px; margin: 0 2px; border: 1px solid #ccc; text-decoration: none;
         }
-        .orders-container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        thead th {
-            background: #1976d2;
-            color: white;
-            padding: 10px;
-            text-align: left;
-        }
-        tbody td {
-            border-bottom: 1px solid #ddd;
-            padding: 10px;
-            vertical-align: top;
-        }
-        tbody tr:hover {
-            background: #f0f7ff;
-        }
-        .pagination {
-            text-align: center;
-        }
-        .page-link {
-            display: inline-block;
-            padding: 8px 12px;
-            margin: 0 5px;
-            background: #1976d2;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .page-link.disabled {
-            background: #ccc;
-            cursor: default;
-        }
-        .products-list {
-            margin: 0;
-            padding-left: 15px;
-            list-style-type: disc;
-            font-size: 0.9em;
-            color: #555;
-        }
+        .pagination .active { background-color: #007BFF; color: white; }
+        .product-list { margin: 0; padding-left: 20px; }
     </style>
 </head>
 <body>
-<div class="orders-container">
-    <h2>Histórico de Pedidos - Fornecedor</h2>
+    <h1>Histórico de Pedidos Recebidos</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Código do Pedido</th>
-                <th>Cliente</th>
-                <th>Produtos</th>
-                <th>Total (R$)</th>
-                <th>Data do Pedido</th>
-            </tr>
-        </thead>
-        <tbody id="ordersTableBody">
-            <!-- Conteúdo será carregado via JS -->
-        </tbody>
-    </table>
+    <c:if test="${empty ordersPage.content}">
+        <p>Não há pedidos recebidos.</p>
+    </c:if>
 
-    <div class="pagination">
-        <a href="#" id="prevPage" class="page-link">Anterior</a>
-        <span id="pageInfo" style="margin: 0 10px;"></span>
-        <a href="#" id="nextPage" class="page-link">Próximo</a>
-    </div>
-</div>
+    <c:if test="${not empty ordersPage.content}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código do Pedido</th>
+                    <th>Cliente</th>
+                    <th>Produtos</th>
+                    <th>Total</th>
+                    <th>Data do Pedido</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="order" items="${ordersPage.content}">
+                    <tr>
+                        <td>${order.orderCode}</td>
+                        <td>${order.clientName}</td>
+                        <td>
+                            <ul class="product-list">
+                                <c:forEach var="product" items="${order.products}">
+                                    <li>
+                                        <strong>${product.name}</strong> - ${product.description}
+                                        (R$ <fmt:formatNumber value="${product.price}" type="number" minFractionDigits="2" />)
+										(<fmt:formatNumber value="${product.quantity}" type="number"/>)
+                                    </li>
+                                </c:forEach>
+                            </ul>
+                        </td>
+                        <td>R$ <fmt:formatNumber value="${order.total}" type="number" minFractionDigits="2" /></td>
+                        <td><c:out value="${order.creationDate}" /></td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
 
-<script>
-    const ordersTableBody = document.getElementById('ordersTableBody');
-    const prevPageBtn = document.getElementById('prevPage');
-    const nextPageBtn = document.getElementById('nextPage');
-    const pageInfo = document.getElementById('pageInfo');
-
-    let currentPage = 0;
-    const pageSize = 10;
-
-    function formatDateTime(dateTimeStr) {
-        const dt = new Date(dateTimeStr);
-        return dt.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    }
-
-    function loadOrders(page) {
-        fetch(`${window.location.origin}/suppliers/history?page=${page}&size=${pageSize}`)
-            .then(response => {
-                if (!response.ok) throw new Error('Erro ao carregar histórico');
-                return response.json();
-            })
-            .then(data => {
-                const ordersPage = data.data;
-                ordersTableBody.innerHTML = '';
-
-                if (ordersPage.content.length === 0) {
-                    ordersTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum pedido encontrado.</td></tr>`;
-                } else {
-                    ordersPage.content.forEach(order => {
-                        const productsHtml = order.products.map(p =>
-                            `<li><strong>${p.name}</strong>: ${p.description}</li>`
-                        ).join('');
-                        ordersTableBody.innerHTML += `
-                            <tr>
-                                <td>${order.orderCode}</td>
-                                <td>${order.clientName}</td>
-                                <td><ul class="products-list">${productsHtml}</ul></td>
-                                <td>R$ ${order.total.toFixed(2)}</td>
-                                <td>\${formatDateTime(order.creationDate)}</td>
-                            </tr>`;
-                    });
-                }
-
-                currentPage = ordersPage.number;
-                pageInfo.textContent = `Página ${currentPage + 1} de ${ordersPage.totalPages}`;
-
-                prevPageBtn.classList.toggle('disabled', currentPage === 0);
-                nextPageBtn.classList.toggle('disabled', currentPage + 1 >= ordersPage.totalPages);
-            })
-            .catch(err => {
-                ordersTableBody.innerHTML = `<tr><td colspan="5" style="color:red; text-align:center;">${err.message}</td></tr>`;
-                pageInfo.textContent = '';
-                prevPageBtn.classList.add('disabled');
-                nextPageBtn.classList.add('disabled');
-            });
-    }
-
-    prevPageBtn.addEventListener('click', e => {
-        e.preventDefault();
-        if (currentPage > 0) loadOrders(currentPage - 1);
-    });
-
-    nextPageBtn.addEventListener('click', e => {
-        e.preventDefault();
-        loadOrders(currentPage + 1);
-    });
-
-    loadOrders(0);
-</script>
+        <!-- Paginação -->
+        <div class="pagination">
+            <c:if test="${ordersPage.totalPages > 1}">
+                <c:forEach var="i" begin="0" end="${ordersPage.totalPages - 1}">
+                    <c:choose>
+                        <c:when test="${i == ordersPage.number}">
+                            <span class="active">${i + 1}</span>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="?page=${i}&size=${ordersPage.size}">${i + 1}</a>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </c:if>
+        </div>
+    </c:if>
+	
+    <p><a href="${pageContext.request.contextPath}/suppliers/info">Voltar para informações do fornecedor</a></p>
 </body>
 </html>

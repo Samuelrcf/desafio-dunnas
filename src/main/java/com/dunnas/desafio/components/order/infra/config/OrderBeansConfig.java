@@ -9,6 +9,7 @@ import com.dunnas.desafio.components.order.application.mappers.OrderDomainMapper
 import com.dunnas.desafio.components.order.application.usecases.CreateOrderUseCase;
 import com.dunnas.desafio.components.order.application.usecases.impl.CreateOrderUseCaseImpl;
 import com.dunnas.desafio.components.product.application.gateways.ProductRepositoryGateway;
+import com.dunnas.desafio.components.supplier.application.gateways.SupplierRepositoryGateway;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
 
 @Configuration
@@ -17,8 +18,8 @@ public class OrderBeansConfig {
 	@Bean
 	CreateOrderUseCase createOrderUseCase(OrderRepositoryGateway orderRepositoryGateway,
 			OrderDomainMapper orderDomainMapper, CurrentUserProvider currentUserProvider,
-			ClientRepositoryGateway clientRepositoryGateway, ProductRepositoryGateway productRepositoryGateway) {
-		return new CreateOrderUseCaseImpl(orderRepositoryGateway, orderDomainMapper, currentUserProvider, clientRepositoryGateway, productRepositoryGateway);
+			ClientRepositoryGateway clientRepositoryGateway, ProductRepositoryGateway productRepositoryGateway, SupplierRepositoryGateway supplierRepositoryGateway) {
+		return new CreateOrderUseCaseImpl(orderRepositoryGateway, orderDomainMapper, currentUserProvider, clientRepositoryGateway, productRepositoryGateway, supplierRepositoryGateway);
 	}
 
 	@Bean

@@ -32,7 +32,7 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 
 		Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
 		
-		Supplier supplier = supplierRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado"));
+		Supplier supplier = supplierRepositoryGateway.findByUserEntityId(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
 		//Supplier supplier = supplierRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); //excluir
 		

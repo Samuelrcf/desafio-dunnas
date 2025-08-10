@@ -3,7 +3,6 @@ package com.dunnas.desafio.components.order.application.usecases.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 
 import com.dunnas.desafio.components.client.application.gateways.ClientRepositoryGateway;
 import com.dunnas.desafio.components.client.domain.models.Client;
-import com.dunnas.desafio.components.order.application.exceptions.InsufficientBalanceException;
 import com.dunnas.desafio.components.order.application.gateways.OrderRepositoryGateway;
 import com.dunnas.desafio.components.order.application.mappers.OrderDomainMapper;
 import com.dunnas.desafio.components.order.application.usecases.CreateOrderUseCase;
@@ -22,6 +20,7 @@ import com.dunnas.desafio.components.order.domain.models.Order;
 import com.dunnas.desafio.components.order.domain.models.OrderItem;
 import com.dunnas.desafio.components.product.application.gateways.ProductRepositoryGateway;
 import com.dunnas.desafio.components.product.domain.models.Product;
+import com.dunnas.desafio.components.supplier.application.gateways.SupplierRepositoryGateway;
 import com.dunnas.desafio.components.supplier.domain.models.Supplier;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
 import com.dunnas.desafio.shared.exceptions.ObjectNotFoundException;
@@ -33,16 +32,18 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	private final OrderDomainMapper orderDomainMapper;
 	private final CurrentUserProvider currentUserProvider;
 	private final ClientRepositoryGateway clientRepositoryGateway;
+	private final SupplierRepositoryGateway supplierRepositoryGateway;
 	private final ProductRepositoryGateway productRepositoryGateway;
 
 	public CreateOrderUseCaseImpl(OrderRepositoryGateway orderRepositoryGateway, OrderDomainMapper orderDomainMapper,
 			CurrentUserProvider currentUserProvider, ClientRepositoryGateway clientRepositoryGateway,
-			ProductRepositoryGateway productRepositoryGateway) {
+			ProductRepositoryGateway productRepositoryGateway, SupplierRepositoryGateway supplierRepositoryGateway) {
 		this.orderRepositoryGateway = orderRepositoryGateway;
 		this.orderDomainMapper = orderDomainMapper;
 		this.currentUserProvider = currentUserProvider;
 		this.clientRepositoryGateway = clientRepositoryGateway;
 		this.productRepositoryGateway = productRepositoryGateway;
+		this.supplierRepositoryGateway = supplierRepositoryGateway;
 	}
 
 	@Override
@@ -50,77 +51,74 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 		
 		Long currentUserId = currentUserProvider.getCurrentUserId().orElseThrow(() -> new UnauthorizedException("Usuário não autenticado"));
 		
-		Client client = clientRepositoryGateway.findById(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+		Client client = clientRepositoryGateway.findByUserEntityId(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-		//Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não autenticado")); // simulado
+	    //Client client = clientRepositoryGateway.findByUserEntityId(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 
-	    // 1. Buscar todos os produtos
 	    List<Long> productIds = input.products().stream()
 	        .map(ProductQuantityInput::productId)
 	        .toList();
 
 	    List<Product> products = productRepositoryGateway.findAllById(productIds);
 
-	    Map<Long, Product> productMap = products.stream()
-	        .collect(Collectors.toMap(Product::getId, p -> p));
-
-	    // 2. Agrupar os itens por fornecedor e calcular total geral
-	    Map<Long, List<OrderItem>> supplierToItemsMap = new HashMap<>();
-	    BigDecimal totalGeral = BigDecimal.ZERO;
-
-	    for (ProductQuantityInput pq : input.products()) {
-	        Product product = productMap.get(pq.productId());
-	        if (product == null) {
-	            throw new ObjectNotFoundException("Produto não encontrado: ID = " + pq.productId());
-	        }
-
-	        BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(pq.quantity()));
-	        OrderItem item = new OrderItem(product, pq.quantity(), subtotal);
-
-	        supplierToItemsMap
-	            .computeIfAbsent(product.getSupplier().getId(), k -> new ArrayList<>())
-	            .add(item);
-
-	        totalGeral = totalGeral.add(subtotal);
+	    if (products.isEmpty()) {
+	        throw new ObjectNotFoundException("Nenhum produto encontrado");
 	    }
 
-	    // 3. Verificar saldo do cliente
-	    if (client.getBalance().compareTo(totalGeral) < 0) {
-	        throw new InsufficientBalanceException("Saldo insuficiente para realizar o pedido. Total: R$ " 
-	            + totalGeral + ", Saldo disponível: R$ " + client.getBalance());
-	    }
+	    Map<Supplier, List<ProductQuantityInput>> produtosPorFornecedor =
+	        input.products().stream()
+	            .collect(Collectors.groupingBy(
+	                pq -> {
+	                    Product product = products.stream()
+	                        .filter(pr -> pr.getId().equals(pq.productId()))
+	                        .findFirst()
+	                        .orElseThrow(() -> new ObjectNotFoundException("Produto não encontrado"));
+	                    return product.getSupplier();
+	                }
+	            ));
 
-	    // 4. Descontar o saldo do cliente
-	    client.decreaseBalance(totalGeral);
-	    clientRepositoryGateway.create(client); // Salvar alteração de saldo
-
-	    // 5. Criar os pedidos por fornecedor
 	    List<CreateOrderUseCaseOutput> outputs = new ArrayList<>();
 
-	    for (Map.Entry<Long, List<OrderItem>> entry : supplierToItemsMap.entrySet()) {
-	        List<OrderItem> items = entry.getValue();
-	        Supplier supplier = items.get(0).getProduct().getSupplier();
+	    for (Map.Entry<Supplier, List<ProductQuantityInput>> entry : produtosPorFornecedor.entrySet()) {
+	        Supplier supplier = entry.getKey();
+
+	        supplier = supplierRepositoryGateway.findById(supplier.getId())
+	            .orElseThrow(() -> new ObjectNotFoundException("Fornecedor não encontrado"));
+
+	        List<OrderItem> items = entry.getValue().stream().map(pq -> {
+	            Product product = products.stream()
+	                .filter(pr -> pr.getId().equals(pq.productId()))
+	                .findFirst()
+	                .orElseThrow(() -> new ObjectNotFoundException("Produto não encontrado"));
+
+	            BigDecimal subtotal = product.getPrice().multiply(BigDecimal.valueOf(pq.quantity()));
+	            return new OrderItem(product, pq.quantity(), subtotal);
+	        }).toList();
 
 	        BigDecimal total = items.stream()
 	            .map(OrderItem::getSubtotal)
 	            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-	        List<Product> orderProducts = items.stream()
-	            .map(OrderItem::getProduct)
-	            .toList();
+	        client.decreaseBalance(total);
 
-	        UUID orderCode = UUID.randomUUID();
-
-	        Order order = new Order(orderCode, client, supplier, orderProducts, items, total, LocalDateTime.now());
+	        Order order = new Order(
+	            UUID.randomUUID(),
+	            client,
+	            supplier,
+	            items.stream().map(OrderItem::getProduct).toList(),
+	            items,
+	            total,
+	            LocalDateTime.now()
+	        );
 
 	        Order createdOrder = orderRepositoryGateway.create(order);
 
-	        CreateOrderUseCaseOutput output = orderDomainMapper.domainToCreateOrderUseCaseOutput(createdOrder);
-	        outputs.add(output);
+	        outputs.add(orderDomainMapper.domainToCreateOrderUseCaseOutput(createdOrder));
 	    }
+
+	    clientRepositoryGateway.updateBalance(client);
 
 	    return outputs;
 	}
-
 
 }

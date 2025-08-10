@@ -19,5 +19,9 @@ public interface SupplierRepositoryGateway {
     PaginationResult<Order> getHistory(Long supplierId, int page, int size);
 
 	Optional<Supplier> findByUserEntityId(Long currentUserId);
+	
+	Boolean existsByUserEntityUserName(String name);
+	
+	Boolean existsByProductEntityId(Long id);
 
 }

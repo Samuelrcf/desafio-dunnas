@@ -11,4 +11,9 @@ public interface SupplierRepository extends JpaRepository<SupplierEntity, Long>{
 	Optional<SupplierEntity> findByCnpj(String cnpj);
 	
 	Optional<SupplierEntity> findByUserEntityId(Long id);
+	
+	Boolean existsByUserEntityUserName(String name);
+	
+	Boolean existsByProductEntitiesId(Long id);
+
 }

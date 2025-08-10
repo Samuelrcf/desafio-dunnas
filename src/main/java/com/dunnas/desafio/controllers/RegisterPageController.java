@@ -50,7 +50,7 @@ public class RegisterPageController {
 
             clientController.create(dto, request); 
             redirectAttributes.addFlashAttribute("successMessage", "Cliente cadastrado com sucesso.");
-            return "redirect:/register/success";
+            return "redirect:/login";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar cliente: " + e.getMessage());

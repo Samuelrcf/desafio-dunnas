@@ -13,10 +13,14 @@ public interface ClientRepositoryGateway {
     Optional<Client> findById(Long id);
     
     Optional<Client> findByUserEntityId(Long id);
-
+    
     Optional<Client> findByCpf(String cpf);
     
     boolean existsById(Long id);
 
     PaginationResult<Order> getHistory(Long clientId, int page, int size);
+
+	Boolean existsByUserEntityUserName(String name);
+
+	void updateBalance(Client client);
 }

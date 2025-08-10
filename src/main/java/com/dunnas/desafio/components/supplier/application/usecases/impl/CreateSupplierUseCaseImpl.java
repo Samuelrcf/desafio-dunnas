@@ -35,7 +35,7 @@ public class CreateSupplierUseCaseImpl implements CreateSupplierUseCase {
 			throw new ObjectAlreadyExistsException("Usuário já cadastrado com esse CNPJ.");
 		}
 		
-		if (supplierRepositoryGateway.findByCnpj(supplier.getUser().getUserName()).isPresent()) {
+		if (supplierRepositoryGateway.existsByUserEntityUserName(input.user().userName())) {
 			throw new ObjectAlreadyExistsException("Usuário já cadastrado com esse login.");
 		}
 

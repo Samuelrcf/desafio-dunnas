@@ -34,7 +34,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permite frames para o H2
+                .headers(headers -> headers.frameOptions(frame -> frame.disable())) 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors((cors) -> cors.configurationSource(new CorsConfigurationSource() {
                     @Override
@@ -48,9 +48,9 @@ public class SecurityConfig {
                         config.setMaxAge(3600L);
                         return config;
                     }
-                }))//.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-                //.build();
-                .exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
+                })).authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                .build();
+                /*.exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(authorize -> authorize
                         //.requestMatchers("/users/**", "/register").permitAll()
@@ -66,7 +66,7 @@ public class SecurityConfig {
 			    		
                         .anyRequest().permitAll())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .build();*/
     }
 	
     @Bean

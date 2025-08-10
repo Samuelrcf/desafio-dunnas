@@ -37,6 +37,11 @@ public class ClientRepositoryGatewayImpl implements ClientRepositoryGateway{
 		repository.save(entity);
 		return mapper.entityToModel(entity);
 	}
+	
+	@Override
+	public void updateBalance(Client client) {
+		repository.updateBalance(client.getId(), client.getBalance());
+	}
 
 	@Override
 	public Optional<Client> findById(Long id) {
@@ -91,6 +96,11 @@ public class ClientRepositoryGatewayImpl implements ClientRepositoryGateway{
 	    Page<OrderEntity> pageResult = orderRepository.findByClientEntityId(clientId, pageable);
 	    List<Order> orders = pageResult.getContent().stream().map(orderMapper::entityToModel).toList();
 	    return new PaginationResult<>(orders, pageResult.getTotalElements());
+	}
+
+	@Override
+	public Boolean existsByUserEntityUserName(String name) {
+		return repository.existsByUserEntityUserName(name);
 	}
 
 }

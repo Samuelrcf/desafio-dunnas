@@ -9,6 +9,7 @@ import com.dunnas.desafio.components.client.application.usecases.outputs.FetchCl
 import com.dunnas.desafio.components.client.application.usecases.outputs.ProductOutput;
 import com.dunnas.desafio.components.client.domain.models.Client;
 import com.dunnas.desafio.components.order.domain.models.Order;
+import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.components.user.application.mappers.UserDomainMapper;
 import com.dunnas.desafio.components.user.application.usecases.outputs.CreateUserOutput;
 import com.dunnas.desafio.components.user.application.usecases.outputs.FetchUserOutput;
@@ -35,13 +36,27 @@ public class ClientDomainMapper {
 	}
 
 	public CheckHistoryUseCaseOutput domainToCheckHistoryOutput(Order order) {
-		List<ProductOutput> products = order.getProducts().stream()
-				.map(p -> new ProductOutput(p.getId(), p.getName(), p.getDescription(), p.getPrice())).toList();
+	    List<ProductOutput> products = order.getOrderItems().stream()
+	        .map(item -> {
+	            Product p = item.getProduct();
+	            return new ProductOutput(
+	                p.getId(),
+	                p.getName(),
+	                p.getDescription(),
+	                p.getPrice(),
+	                item.getQuantity()
+	            );
+	        })
+	        .toList();
 
-		return new CheckHistoryUseCaseOutput(order.getOrderCode(), order.getSupplier().getName(), products,
-				order.getTotal(), order.getCreationDate());
+	    return new CheckHistoryUseCaseOutput(
+	        order.getOrderCode(),
+	        order.getSupplier().getName(),
+	        products,
+	        order.getTotal(),
+	        order.getCreationDate()
+	    );
 	}
-	
 	
 	public FetchClientInfoUseCaseOutput domainToFetchClientInfoUseCaseOutput(Client domain) {
 		

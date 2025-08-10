@@ -3,6 +3,7 @@ package com.dunnas.desafio.components.supplier.application.mappers;
 import java.util.List;
 
 import com.dunnas.desafio.components.order.domain.models.Order;
+import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.components.supplier.application.usecases.outputs.CheckHistoryUseCaseOutput;
 import com.dunnas.desafio.components.supplier.application.usecases.outputs.CreateSupplierUseCaseOutput;
 import com.dunnas.desafio.components.supplier.application.usecases.outputs.FetchSupplierInfoUseCaseOutput;
@@ -26,10 +27,21 @@ public class SupplierDomainMapper {
     }
     
 	public CheckHistoryUseCaseOutput domainToCheckHistoryOutput(Order order) {
-		List<ProductOutput> products = order.getProducts().stream()
-				.map(p -> new ProductOutput(p.getId(), p.getName(), p.getDescription(), p.getPrice())).toList();
-
-		return new CheckHistoryUseCaseOutput(order.getOrderCode(), order.getSupplier().getName(), products,
+		
+	    List<ProductOutput> products = order.getOrderItems().stream()
+		        .map(item -> {
+		            Product p = item.getProduct();
+		            return new ProductOutput(
+		                p.getId(),
+		                p.getName(),
+		                p.getDescription(),
+		                p.getPrice(),
+		                item.getQuantity()
+		            );
+		        })
+		        .toList();
+	    
+		return new CheckHistoryUseCaseOutput(order.getOrderCode(), order.getClient().getName(), products,
 				order.getTotal(), order.getCreationDate());
 	}
 	

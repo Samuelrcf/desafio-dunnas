@@ -38,7 +38,7 @@ public class CreateClientUseCaseImpl implements CreateClientUseCase {
 			throw new ObjectAlreadyExistsException("Usuário já cadastrado com esse CPF.");
 		}
 		
-		if (clientRepositoryGateway.findByCpf(client.getUser().getUserName()).isPresent()) {
+		if (clientRepositoryGateway.existsByUserEntityUserName(input.user().userName())) {
 			throw new ObjectAlreadyExistsException("Usuário já cadastrado com esse login.");
 		}
 

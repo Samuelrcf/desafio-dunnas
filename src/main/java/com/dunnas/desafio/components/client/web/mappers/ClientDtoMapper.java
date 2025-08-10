@@ -61,7 +61,7 @@ public class ClientDtoMapper {
 	
     public OrderDto checkHistoryUseCaseOutputToOrderDto(CheckHistoryUseCaseOutput output) {
         List<ProductDto> productDtos = output.products().stream()
-            .map(p -> new ProductDto(p.id(), p.name(), p.description(), p.price()))
+            .map(p -> new ProductDto(p.id(), p.name(), p.description(), p.price(), p.quantity()))
             .toList();
 
         return new OrderDto(

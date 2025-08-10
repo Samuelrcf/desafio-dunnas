@@ -38,6 +38,6 @@ public class ClientEntity {
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private UserEntity userEntity;
 	
-	@OneToMany(mappedBy = "clientEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "clientEntity", cascade = CascadeType.ALL)
 	private List<OrderEntity> orderEntities;
 }

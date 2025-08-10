@@ -28,6 +28,13 @@ public class ProductRepositoryGatewayImpl implements ProductRepositoryGateway{
 	}
 
 	@Override
+	public Product update(Product product) {
+		ProductEntity entity = mapper.modelToEntity(product);
+		repository.save(entity);
+		return mapper.entityToModel(entity);
+	}
+
+	@Override
 	public Optional<Product> findById(Long id) {
         Optional<ProductEntity> optionalEntity = repository.findById(id);
 
@@ -68,4 +75,24 @@ public class ProductRepositoryGatewayImpl implements ProductRepositoryGateway{
 	                   .toList();
 	}
 
+	@Override
+	public List<Product> findAll() {
+		List<ProductEntity> entities = repository.findByDeletedFalse();
+		return entities.stream()
+				.map(mapper::entityToModel)
+				.toList();
+	}
+
+	@Override
+	public List<Product> findAllBySupplierId(Long id) {
+		List<ProductEntity> entities = repository.findBySupplierEntityIdAndDeletedFalse(id);
+		return entities.stream()
+				.map(mapper::entityToModel)
+				.toList();
+	}
+
+	@Override
+	public void delete(Long id) {
+		repository.deleteById(id);
+	}
 }

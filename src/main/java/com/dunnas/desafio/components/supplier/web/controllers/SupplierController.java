@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,25 +51,28 @@ public class SupplierController {
         CreateSupplierUseCaseOutput output = createUseCase.execute(input);
         ReadSupplierDto readDto = mapper.createUseCaseOutputToReadDto(output);
 
-        ApiSuccessResponse<ReadSupplierDto> response = ResponseUtil.success(readDto, "Fornecedor criado com sucesso.", request.getRequestURI());
+        ApiSuccessResponse<ReadSupplierDto> response = ResponseUtil.success(readDto, "Fornecedor cadastrado com sucesso.", request.getRequestURI());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
-	@GetMapping("/history")
-	public ResponseEntity<ApiSuccessResponse<Page<OrderDto>>> checkHistory(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size, HttpServletRequest request) throws Exception {
+    @GetMapping("/history")
+    public String checkHistory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) throws Exception {
 
-		PaginationResult<CheckHistoryUseCaseOutput> output = checkHistoryUseCase.execute(page, size);
+        PaginationResult<CheckHistoryUseCaseOutput> output = checkHistoryUseCase.execute(page, size);
 
-		List<OrderDto> dtoList = output.getContent().stream().map(mapper::checkHistoryUseCaseOutputToOrderDto).toList();
+        List<OrderDto> dtoList = output.getContent().stream()
+                .map(mapper::checkHistoryUseCaseOutputToOrderDto)
+                .toList();
 
-		Page<OrderDto> pageResult = new PageImpl<>(dtoList, PageRequest.of(page, size), output.getTotalElements());
+        Page<OrderDto> pageResult = new PageImpl<>(dtoList, PageRequest.of(page, size), output.getTotalElements());
 
-		ApiSuccessResponse<Page<OrderDto>> response = new ApiSuccessResponse<>("Histórico carregado com sucesso",
-				pageResult, System.currentTimeMillis(), request.getRequestURI());
+        model.addAttribute("ordersPage", pageResult);
 
-		return ResponseEntity.ok(response);
-	}
+        return "supplierHistory"; 
+    }
 	
 	@GetMapping
 	public ResponseEntity<ApiSuccessResponse<ReadSupplierDto>> fetchSupplierInfo(HttpServletRequest request) throws Exception {
