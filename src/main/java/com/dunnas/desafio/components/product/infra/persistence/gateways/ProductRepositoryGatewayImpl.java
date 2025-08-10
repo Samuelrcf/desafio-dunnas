@@ -28,13 +28,6 @@ public class ProductRepositoryGatewayImpl implements ProductRepositoryGateway{
 	}
 
 	@Override
-	public Product update(Product product) {
-		ProductEntity entity = mapper.modelToEntity(product);
-		repository.save(entity);
-		return mapper.entityToModel(entity);
-	}
-
-	@Override
 	public Optional<Product> findById(Long id) {
         Optional<ProductEntity> optionalEntity = repository.findById(id);
 

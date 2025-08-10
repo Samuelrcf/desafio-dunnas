@@ -23,6 +23,7 @@ public class CouponEntityMapper {
         couponEntity.setName(coupon.getName());
         couponEntity.setCode(coupon.getCode());
         couponEntity.setDiscount(discountEntityMapper.modelToEntity(coupon.getDiscount()));
+        couponEntity.setProductEntity(couponEntity.getDiscount().getProductEntity());
 
         return couponEntity;
     }

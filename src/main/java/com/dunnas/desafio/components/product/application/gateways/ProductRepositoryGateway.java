@@ -11,8 +11,6 @@ public interface ProductRepositoryGateway {
     
     void delete(Long id);
 
-    Product update(Product Product);
-
     Optional<Product> findById(Long id);
 
     Optional<Product> findByName(String name);

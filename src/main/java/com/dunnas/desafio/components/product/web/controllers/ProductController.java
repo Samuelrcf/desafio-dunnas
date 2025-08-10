@@ -1,5 +1,6 @@
 package com.dunnas.desafio.components.product.web.controllers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dunnas.desafio.components.product.application.usecases.CreateCouponUseCase;
@@ -22,7 +24,6 @@ import com.dunnas.desafio.components.product.application.usecases.DeleteProductU
 import com.dunnas.desafio.components.product.application.usecases.ListProductsBySupplierUseCase;
 import com.dunnas.desafio.components.product.application.usecases.ListProductsUseCase;
 import com.dunnas.desafio.components.product.application.usecases.inputs.CreateCouponUseCaseInput;
-import com.dunnas.desafio.components.product.application.usecases.inputs.CreateDiscountUseCaseInput;
 import com.dunnas.desafio.components.product.application.usecases.inputs.CreateProductUseCaseInput;
 import com.dunnas.desafio.components.product.application.usecases.outputs.CreateProductUseCaseOutput;
 import com.dunnas.desafio.components.product.web.dtos.CreateCouponDto;
@@ -37,6 +38,8 @@ import com.dunnas.desafio.shared.response.ResponseUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -74,16 +77,21 @@ public class ProductController {
         redirectAttributes.addFlashAttribute("successMessage", "Produto criado com sucesso!");
         return "redirect:/products/supplier"; 
     }
+    
+    @PostMapping("/discount")
+    public String applyDiscount(@RequestParam Long productId,
+                                @RequestParam @DecimalMin("0.0") @DecimalMax("1.0") BigDecimal value,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            CreateDiscountDto dto = new CreateDiscountDto(value, productId);
+            var input = discountDtoMapper.createDtoToUseCaseInput(dto);
+            createDiscountUseCase.execute(input);
 
-    @PostMapping("/discounts")
-    public ResponseEntity<ApiSuccessResponse<ReadProductDto>> createDiscount(@Valid @RequestBody CreateDiscountDto createDiscountDto, HttpServletRequest request) throws Exception {
-
-        CreateDiscountUseCaseInput input = discountDtoMapper.createDtoToUseCaseInput(createDiscountDto);
-        CreateProductUseCaseOutput output = createDiscountUseCase.execute(input);
-        ReadProductDto readDto = mapper.createUseCaseOutputToReadDto(output);
-
-        ApiSuccessResponse<ReadProductDto> response = ResponseUtil.success(readDto, "Desconto criado com sucesso.", request.getRequestURI());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+            redirectAttributes.addFlashAttribute("successMessage", "Desconto aplicado com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao aplicar desconto: " + e.getMessage());
+        }
+        return "redirect:/products/supplier";
     }
 
     @PostMapping("/coupons")

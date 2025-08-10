@@ -3,17 +3,23 @@ package com.dunnas.desafio.components.product.infra.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.dunnas.desafio.components.product.application.gateways.CouponRepositoryGateway;
+import com.dunnas.desafio.components.product.application.gateways.DiscountRepositoryGateway;
 import com.dunnas.desafio.components.product.application.gateways.ProductRepositoryGateway;
 import com.dunnas.desafio.components.product.application.mappers.ProductDomainMapper;
 import com.dunnas.desafio.components.product.application.usecases.CreateCouponUseCase;
 import com.dunnas.desafio.components.product.application.usecases.CreateDiscountUseCase;
 import com.dunnas.desafio.components.product.application.usecases.CreateProductUseCase;
+import com.dunnas.desafio.components.product.application.usecases.DeleteCouponUseCase;
+import com.dunnas.desafio.components.product.application.usecases.DeleteDiscountUseCase;
 import com.dunnas.desafio.components.product.application.usecases.DeleteProductUseCase;
 import com.dunnas.desafio.components.product.application.usecases.ListProductsBySupplierUseCase;
 import com.dunnas.desafio.components.product.application.usecases.ListProductsUseCase;
 import com.dunnas.desafio.components.product.application.usecases.impl.CreateCouponUseCaseImpl;
 import com.dunnas.desafio.components.product.application.usecases.impl.CreateDiscountUseCaseImpl;
 import com.dunnas.desafio.components.product.application.usecases.impl.CreateProductUseCaseImpl;
+import com.dunnas.desafio.components.product.application.usecases.impl.DeleteCouponUseCaseImpl;
+import com.dunnas.desafio.components.product.application.usecases.impl.DeleteDiscountUseCaseImpl;
 import com.dunnas.desafio.components.product.application.usecases.impl.DeleteProductUseCaseImpl;
 import com.dunnas.desafio.components.product.application.usecases.impl.ListProductsBySupplierUseCaseImpl;
 import com.dunnas.desafio.components.product.application.usecases.impl.ListProductsUseCaseImpl;
@@ -36,17 +42,23 @@ public class ProductBeansConfig {
 		return new ProductDomainMapper();
 	}
 
-	@Bean
-	CreateDiscountUseCase createDiscountUseCase(ProductRepositoryGateway productRepositoryGateway,
-			ProductDomainMapper productDomainMapper) {
-		return new CreateDiscountUseCaseImpl(productRepositoryGateway, productDomainMapper);
-	}
+    @Bean
+    CreateDiscountUseCase createDiscountUseCase(ProductRepositoryGateway productRepositoryGateway,
+            ProductDomainMapper productDomainMapper,
+            DiscountRepositoryGateway discountRepositoryGateway) {
+        return new CreateDiscountUseCaseImpl(productRepositoryGateway, productDomainMapper,
+                discountRepositoryGateway);
+    }
 
-	@Bean
-	CreateCouponUseCase createCouponUseCase(ProductRepositoryGateway productRepositoryGateway,
-			ProductDomainMapper productDomainMapper) {
-		return new CreateCouponUseCaseImpl(productRepositoryGateway, productDomainMapper);
-	}
+    @Bean
+    CreateCouponUseCase createCouponUseCase(ProductRepositoryGateway productRepositoryGateway,
+            ProductDomainMapper productDomainMapper,
+            DiscountRepositoryGateway discountRepositoryGateway,
+            CouponRepositoryGateway couponRepositoryGateway) {
+        return new CreateCouponUseCaseImpl(productRepositoryGateway, productDomainMapper,
+                discountRepositoryGateway,
+                couponRepositoryGateway);
+    }
 
 	@Bean
 	ListProductsUseCase listProductsUseCase(ProductRepositoryGateway productRepositoryGateway,
@@ -66,4 +78,14 @@ public class ProductBeansConfig {
 	DeleteProductUseCase deleteProductUseCase(ProductRepositoryGateway productRepositoryGateway, SupplierRepositoryGateway supplierRepositoryGateway) {
 		return new DeleteProductUseCaseImpl(productRepositoryGateway, supplierRepositoryGateway);
 	}
+	
+    @Bean
+    DeleteDiscountUseCase deleteDiscountUseCase(DiscountRepositoryGateway discountRepositoryGateway, ProductRepositoryGateway productRepositoryGateway) {
+        return new DeleteDiscountUseCaseImpl(discountRepositoryGateway, productRepositoryGateway);
+    }
+
+    @Bean
+    DeleteCouponUseCase deleteCouponUseCase(CouponRepositoryGateway couponRepositoryGateway, ProductRepositoryGateway productRepositoryGateway) {
+        return new DeleteCouponUseCaseImpl(couponRepositoryGateway, productRepositoryGateway);
+    }
 }

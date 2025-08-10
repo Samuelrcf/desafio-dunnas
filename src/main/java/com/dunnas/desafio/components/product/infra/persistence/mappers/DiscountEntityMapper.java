@@ -2,6 +2,7 @@ package com.dunnas.desafio.components.product.infra.persistence.mappers;
 
 import com.dunnas.desafio.components.product.domain.models.Discount;
 import com.dunnas.desafio.components.product.infra.persistence.entities.DiscountEntity;
+import com.dunnas.desafio.components.product.infra.persistence.entities.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,10 @@ public class DiscountEntityMapper {
         DiscountEntity discountEntity = new DiscountEntity();
         discountEntity.setId(discount.getId());
         discountEntity.setValue(discount.getValue());
-        discountEntity.setProductEntity(null);
+
+        ProductEntity productEntity = new ProductEntity();
+        productEntity.setId(discount.getProductId());
+        discountEntity.setProductEntity(productEntity);
 
         return discountEntity;
     }

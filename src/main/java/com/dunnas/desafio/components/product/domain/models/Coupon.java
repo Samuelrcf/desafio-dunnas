@@ -10,6 +10,7 @@ public class Coupon {
         this.id = id;
         this.name = name;
         this.code = code;
+        this.discount = discount;
     }
 
     public Long getId() {
