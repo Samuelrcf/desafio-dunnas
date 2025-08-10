@@ -65,45 +65,39 @@
         }
     </style>
 
-    <script>
-        function toggleFields() {
-            const clientFields = document.getElementById('client-fields');
-            const supplierFields = document.getElementById('supplier-fields');
+	<script>
+	    const clientRegisterUrl = '${pageContext.request.contextPath}/clients/register';
+	    const supplierRegisterUrl = '${pageContext.request.contextPath}/suppliers/register';
 
-            const radioClient = document.getElementById('radioClient');
-            const radioSupplier = document.getElementById('radioSupplier');
+	    function toggleFields() {
+	        const clientFields = document.getElementById('client-fields');
+	        const supplierFields = document.getElementById('supplier-fields');
+	        const form = document.getElementById('formRegister');
 
-            if (radioClient.checked) {
-                clientFields.style.display = 'block';
-                supplierFields.style.display = 'none';
+	        if (document.getElementById('radioClient').checked) {
+	            clientFields.style.display = 'block';
+	            supplierFields.style.display = 'none';
+	            form.action = clientRegisterUrl;
 
-                clientFields.querySelectorAll('input').forEach(input => input.disabled = false);
-                supplierFields.querySelectorAll('input').forEach(input => input.disabled = true);
+	            clientFields.querySelectorAll('input').forEach(i => i.disabled = false);
+	            supplierFields.querySelectorAll('input').forEach(i => i.disabled = true);
+	        } else {
+	            clientFields.style.display = 'none';
+	            supplierFields.style.display = 'block';
+	            form.action = supplierRegisterUrl;
 
-                document.getElementById('roleClient').disabled = false;
-                document.getElementById('roleSupplier').disabled = true;
+	            clientFields.querySelectorAll('input').forEach(i => i.disabled = true);
+	            supplierFields.querySelectorAll('input').forEach(i => i.disabled = false);
+	        }
+	    }
+	    window.onload = toggleFields;
+	</script>
 
-                document.getElementById('formClient').action = '/register/client';
-            } else {
-                clientFields.style.display = 'none';
-                supplierFields.style.display = 'block';
-
-                clientFields.querySelectorAll('input').forEach(input => input.disabled = true);
-                supplierFields.querySelectorAll('input').forEach(input => input.disabled = false);
-
-                document.getElementById('roleClient').disabled = true;
-                document.getElementById('roleSupplier').disabled = false;
-
-                document.getElementById('formClient').action = '/register/supplier';
-            }
-        }
-        window.onload = toggleFields;
-    </script>
 </head>
 <body>
     <div class="form-container">
         <h2>Cadastro de Usuário</h2>
-        <form action="/register/client" method="post" id="formClient">
+        <form method="post" id="formRegister">
             <label>
                 <input type="radio" name="userType" value="client" id="radioClient" checked onchange="toggleFields()"> Cliente
             </label>
@@ -112,34 +106,26 @@
             </label>
 
             <div id="client-fields">
-                <input type="text" name="name" required placeholder="Nome completo"/>
-                <input type="text" name="cpf" required placeholder="CPF"/>
-                <input type="date" name="birthDate" required placeholder="Data de nascimento"/>
-                <input type="text" 
-                       name="createUserDto.userName" 
-                       required 
-                       placeholder="Nome de usuário"
-                       pattern="[A-Za-z0-9_]{3,20}"
-                       title="O nome de usuário deve ter entre 3 e 20 caracteres e conter apenas letras, números e underline"/>
-                <input type="password" name="createUserDto.password" required placeholder="Senha"/>
-                <input type="hidden" id="roleClient" name="createUserDto.role" value="CLIENT"/>
+                <input type="text" name="name" placeholder="Nome completo" required/>
+                <input type="text" name="cpf" placeholder="CPF" required/>
+                <input type="date" name="birthDate" placeholder="Data de nascimento" required/>
+                <input type="text" name="createUserDto.userName" placeholder="Nome de usuário" 
+                       pattern="[A-Za-z0-9_]{3,20}" title="3 a 20 caracteres, letras, números ou _" required/>
+                <input type="password" name="createUserDto.password" placeholder="Senha" required/>
+                <input type="hidden" name="createUserDto.role" value="CLIENT"/>
             </div>
 
             <div id="supplier-fields" style="display:none;">
-                <input type="text" name="name" disabled placeholder="Nome"/>
-                <input type="text" name="cnpj" disabled placeholder="CNPJ"/>
-                <input type="text" 
-                       name="createUserDto.userName" 
-                       required 
-                       placeholder="Nome de usuário"
-                       pattern="[A-Za-z0-9_]{3,20}"
-                       title="O nome de usuário deve ter entre 3 e 20 caracteres e conter apenas letras, números e underline"/>
-                <input type="password" name="createUserDto.password" disabled placeholder="Senha"/>
-                <input type="hidden" id="roleSupplier" name="createUserDto.role" value="SUPPLIER" disabled/>
+                <input type="text" name="name" placeholder="Nome" required/>
+                <input type="text" name="cnpj" placeholder="CNPJ" required/>
+                <input type="text" name="createUserDto.userName" placeholder="Nome de usuário" 
+                       pattern="[A-Za-z0-9_]{3,20}" title="3 a 20 caracteres, letras, números ou _" required/>
+                <input type="password" name="createUserDto.password" placeholder="Senha" required/>
+                <input type="hidden" name="createUserDto.role" value="SUPPLIER"/>
             </div>
 
             <button type="submit">Cadastrar</button>
-			<p>Já tem uma conta? <a href="${pageContext.request.contextPath}/login">Faça login</a></p>
+            <p>Já tem uma conta? <a href="${pageContext.request.contextPath}/login">Faça login</a></p>
         </form>
     </div>
 </body>

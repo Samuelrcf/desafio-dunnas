@@ -1,6 +1,7 @@
 package com.dunnas.desafio.components.user.web.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -16,14 +17,29 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping
 @AllArgsConstructor
 public class UserController {
 	
     private final UserDtoMapper mapper;
     private final AuthenticationUseCase authenticationUseCase;
     
-    @PostMapping("/auth/login")
+    @GetMapping
+    public String showForm() {
+        return "register";
+    }
+
+    @GetMapping("/error")
+    public String errorPage() {
+        return "error";
+    }
+    
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "login"; 
+    }
+    
+    @PostMapping("/auth")
     public String login(@Valid LoginDto loginDto, HttpServletResponse response, RedirectAttributes redirectAttributes) {
         try {
             AuthenticationUseCaseInput input = mapper.loginDtoToAuthenticationUseCaseInput(loginDto);

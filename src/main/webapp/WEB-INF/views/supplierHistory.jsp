@@ -75,6 +75,6 @@
         </div>
     </c:if>
 	
-    <p><a href="${pageContext.request.contextPath}/suppliers/info">Voltar para informações do fornecedor</a></p>
+    <p><a href="${pageContext.request.contextPath}/suppliers/info">Voltar</a></p>
 </body>
 </html>

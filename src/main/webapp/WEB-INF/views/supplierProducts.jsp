@@ -36,7 +36,7 @@
             padding-left: 15px;
         }
     </style>
-</head>
+</head>  
 <body>
     <h1>Meus Produtos</h1>
 

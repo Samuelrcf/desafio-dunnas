@@ -33,6 +33,7 @@ public class ProductEntityMapper {
         entity.setName(product.getName());
         entity.setDescription(product.getDescription());
         entity.setPrice(product.getPrice());
+        entity.setDeleted(false);
         entity.setSupplierEntity(supplierEntityMapper.modelToEntity(product.getSupplier()));
 
         if (product.getDiscounts() != null) {

@@ -95,7 +95,15 @@
 <body>
 <div class="profile-container">
     <h2>Perfil do Cliente</h2>
-    
+
+    <!-- Mensagem de sucesso/erro -->
+    <c:if test="${not empty successMessage}">
+        <div id="message" class="success">${successMessage}</div>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <div id="message" class="error">${errorMessage}</div>
+    </c:if>
+
     <div class="info-row">
         <span class="info-label">Nome:</span>
         <span class="info-value">${client.name}</span>
@@ -122,61 +130,17 @@
     </div>
 
     <div class="buttons">
-        <a href="${pageContext.request.contextPath}/clients/history?page=0&size=10" class="button-link">Visualizar Histórico de Pedidos</a>
-        <a href="${pageContext.request.contextPath}/products" class="button-link">Visualizar Produtos Disponíveis</a>
+        <a href="${pageContext.request.contextPath}/clients/history?page=0&size=10" class="button-link">Pedidos</a>
+        <a href="${pageContext.request.contextPath}/products" class="button-link">Produtos</a>
     </div>
 
     <div id="addCreditSection">
         <h3>Adicionar Crédito</h3>
-        <form id="addCreditForm">
+        <form id="addCreditForm" action="${pageContext.request.contextPath}/clients/credit" method="post">
             <input type="number" step="0.01" min="0.01" name="amount" placeholder="Valor (R$)" required />
             <button type="submit">Adicionar</button>
         </form>
-        <div id="message"></div>
     </div>
 </div>
-
-<script>
-    const form = document.getElementById('addCreditForm');
-    const messageDiv = document.getElementById('message');
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        messageDiv.textContent = '';
-        messageDiv.className = '';
-
-        const amount = form.amount.value;
-        if (amount <= 0) {
-            messageDiv.textContent = 'Informe um valor válido.';
-            messageDiv.className = 'error';
-            return;
-        }
-
-        fetch('${pageContext.request.contextPath}/clients/credit', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ amount: parseFloat(amount) })
-        })
-        .then(response => {
-            if (response.ok) {
-                messageDiv.textContent = 'Crédito adicionado com sucesso!';
-                messageDiv.className = 'success';
-                form.reset();
-                // Opcional: atualizar o saldo na tela ou recarregar
-                location.reload();
-            } else {
-                return response.json().then(data => {
-                    throw new Error(data.message || 'Erro ao adicionar crédito');
-                });
-            }
-        })
-        .catch(error => {
-            messageDiv.textContent = error.message;
-            messageDiv.className = 'error';
-        });
-    });
-</script>
 </body>
 </html>
