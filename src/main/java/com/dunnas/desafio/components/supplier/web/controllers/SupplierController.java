@@ -38,28 +38,28 @@ public class SupplierController {
     private final CreateSupplierUseCase createUseCase;
     private final FetchSupplierInfoUseCase fetchSupplierInfoUseCase;
     private final CheckHistorySupplierUseCase checkHistoryUseCase;
-
+    
     @PostMapping("/register")
-    public String registerSupplier(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String registerSupplier(HttpServletRequest request, Model model) {
         try {
             CreateSupplierDto dto = new CreateSupplierDto(
-                    request.getParameter("name"),
-                    request.getParameter("cnpj"),
-                    new CreateUserDto(
-                            request.getParameter("createUserDto.userName"),
-                            request.getParameter("createUserDto.password"),
-                            request.getParameter("createUserDto.role")
-                    )
+                request.getParameter("name"),
+                request.getParameter("cnpj"),
+                new CreateUserDto(
+                    request.getParameter("createUserDto.userName"),
+                    request.getParameter("createUserDto.password"),
+                    request.getParameter("createUserDto.role")
+                )
             );
 
             CreateSupplierUseCaseInput input = mapper.createDtoToCreateUseCaseInput(dto);
             createUseCase.execute(input);
 
-            redirectAttributes.addFlashAttribute("successMessage", "Fornecedor cadastrado com sucesso.");
-            return "redirect:/login";
+            model.addAttribute("successMessage", "Fornecedor cadastrado com sucesso.");
+            return "login"; 
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar fornecedor: " + e.getMessage());
-            return "redirect:/register/error";
+            model.addAttribute("errorMessage", e.getMessage());
+            return "register";  
         }
     }
     

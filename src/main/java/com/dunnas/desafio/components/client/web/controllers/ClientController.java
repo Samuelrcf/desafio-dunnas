@@ -47,7 +47,7 @@ public class ClientController {
 	private final CheckHistoryClientUseCase checkHistoryUseCase;
 
     @PostMapping("/register")
-    public String registerClient(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String registerClient(HttpServletRequest request, Model model) {
         try {
             CreateClientDto dto = new CreateClientDto(
                     request.getParameter("name"),
@@ -63,11 +63,11 @@ public class ClientController {
             CreateClientUseCaseInput input = mapper.createDtoToCreateClientUseCaseInput(dto);
             createClientUseCase.execute(input);
 
-            redirectAttributes.addFlashAttribute("successMessage", "Cliente cadastrado com sucesso.");
-            return "redirect:/login";
+            model.addAttribute("successMessage", "Fornecedor cadastrado com sucesso.");
+            return "login";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar cliente: " + e.getMessage());
-            return "redirect:/register/error";
+            model.addAttribute("errorMessage", e.getMessage());
+            return "register"; 
         }
     }
 

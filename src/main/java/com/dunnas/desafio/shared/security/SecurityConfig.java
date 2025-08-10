@@ -48,9 +48,9 @@ public class SecurityConfig {
                         config.setMaxAge(3600L);
                         return config;
                     }
-                }))//.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-                //.build();
-                .exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
+                })).authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                .build();
+                /*.exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(authorize -> authorize
                 		
@@ -69,7 +69,7 @@ public class SecurityConfig {
 			    		
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .build();*/
     }
 	
     @Bean

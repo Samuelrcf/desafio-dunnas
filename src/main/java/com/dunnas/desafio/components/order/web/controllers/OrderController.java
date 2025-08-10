@@ -1,7 +1,7 @@
 package com.dunnas.desafio.components.order.web.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,22 +32,27 @@ public class OrderController {
     private final ListProductsUseCase listProductsUseCase;
 
     @PostMapping("/create")
-    public String createOrder(@RequestParam Map<String, String> params, Model model) throws Exception {
+    public String createOrder(
+        @RequestParam List<Long> productIds,
+        @RequestParam List<Integer> quantities,
+        Model model) throws Exception {
 
-        List<ProductQuantityDto> productsQuantities = params.entrySet().stream()
-            .filter(e -> e.getKey().startsWith("quantity_"))
-            .map(e -> {
-                Long productId = Long.parseLong(e.getKey().substring("quantity_".length()));
-                int quantity = 0;
-                try {
-                    quantity = Integer.parseInt(e.getValue());
-                } catch (NumberFormatException ex) {
-                    quantity = 0;
-                }
-                return new ProductQuantityDto(productId, quantity);
-            })
-            .filter(pq -> pq.getQuantity() > 0) 
-            .toList();
+        if (productIds == null || quantities == null || productIds.isEmpty() || quantities.isEmpty() || productIds.size() != quantities.size()) {
+            model.addAttribute("error", "Selecione pelo menos um produto com quantidade válida.");
+            List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+            List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+            model.addAttribute("products", readProductDtos);
+            return "productList";
+        }
+
+        List<ProductQuantityDto> productsQuantities = new ArrayList<>();
+
+        for (int i = 0; i < productIds.size(); i++) {
+            int qty = quantities.get(i);
+            if (qty > 0) {
+                productsQuantities.add(new ProductQuantityDto(productIds.get(i), qty));
+            }
+        }
 
         if (productsQuantities.isEmpty()) {
             model.addAttribute("error", "Selecione pelo menos um produto com quantidade maior que zero.");
@@ -63,7 +68,7 @@ public class OrderController {
         createOrderUseCase.execute(input);
 
         model.addAttribute("message", "Pedido realizado com sucesso!");
-        return "orderConfirmation"; 
+        return "orderConfirmation";
     }
 }
 

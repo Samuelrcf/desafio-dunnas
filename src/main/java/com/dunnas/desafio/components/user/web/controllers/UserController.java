@@ -1,10 +1,10 @@
 package com.dunnas.desafio.components.user.web.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dunnas.desafio.components.user.application.usecases.AuthenticationUseCase;
 import com.dunnas.desafio.components.user.application.usecases.inputs.AuthenticationUseCaseInput;
@@ -40,22 +40,23 @@ public class UserController {
     }
     
     @PostMapping("/auth")
-    public String login(@Valid LoginDto loginDto, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+    public String login(@Valid LoginDto loginDto, HttpServletResponse response, Model model) {
         try {
             AuthenticationUseCaseInput input = mapper.loginDtoToAuthenticationUseCaseInput(loginDto);
-            User user = authenticationUseCase.execute(input, response); 
+            User user = authenticationUseCase.execute(input, response);
 
             if (user.getRole().equalsIgnoreCase("CLIENT")) {
-                return "redirect:/clients/info"; 
+                return "redirect:/clients/info";
             } else if (user.getRole().equalsIgnoreCase("SUPPLIER")) {
-                return "redirect:/suppliers/info"; 
+                return "redirect:/suppliers/info";
             } else {
                 return "redirect:/";
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Usuário ou senha inválidos");
-            return "redirect:/login";
+            model.addAttribute("error", "Usuário ou senha inválidos");
+            return "login";  
         }
     }
+
 
 }

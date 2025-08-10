@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>Login</title>
@@ -62,6 +63,11 @@
         <input type="password" name="password" placeholder="Senha" required />
         <button type="submit">Entrar</button>
     </form>
+	<c:if test="${not empty error}">
+	    <div style="color: red; font-weight: bold; margin-bottom: 15px; text-align: center;">
+	        ${error}
+	    </div>
+	</c:if>
     <div class="register-link">
         <p>Não tem uma conta? <a href="/register">Cadastre-se</a>.</p>
     </div>
