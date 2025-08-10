@@ -16,14 +16,6 @@ public class Supplier {
 	private List<Order> orders;
 	private User user;
 	
-	public Supplier(Long id, String name, String cnpj, List<Product> products, User user) {
-		this.id = id;
-		this.name = name;
-		this.cnpj = cnpj;
-		this.products = products;
-		this.setUser(user);
-	}
-	
 	public Supplier(Long id, String name, String cnpj, User user) {
 		this.id = id;
 		this.name = name;

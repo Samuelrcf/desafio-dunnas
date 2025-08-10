@@ -33,8 +33,6 @@ public class CheckHistoryClientUseCaseImpl implements CheckHistoryClientUseCase{
 		
 		Client client = clientRepositoryGateway.findByUserEntityId(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-		//Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new Exception("Cliente não encontrado."));
-
 	    PaginationResult<Order> ordersPage = clientRepositoryGateway.getHistory(client.getId(), page, size);
 
 	    List<CheckHistoryUseCaseOutput> outputList = ordersPage.getContent().stream()

@@ -3,11 +3,11 @@ package com.dunnas.desafio.components.order.web.controllers;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.dunnas.desafio.components.order.application.usecases.CreateOrderUseCase;
 import com.dunnas.desafio.components.order.application.usecases.inputs.CreateOrderUseCaseInput;
@@ -22,7 +22,7 @@ import com.dunnas.desafio.components.product.web.mappers.ProductDtoMapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/orders")
 public class OrderController {
 	

@@ -13,14 +13,6 @@ public class OrderItem {
 	private BigDecimal subtotal;
 	private Product product;
 	
-	public OrderItem(Long id, Order order, int quantity, BigDecimal subtotal, Product product) {
-		this.id = id;
-		this.order = order;
-		this.quantity = quantity;
-		this.subtotal = subtotal;
-		this.setProduct(product);
-	}
-	
 	public OrderItem(Long id, Product product, int quantity, BigDecimal subtotal) {
 		this.id = id;
 		this.product = product;
@@ -91,5 +83,9 @@ public class OrderItem {
 		return Objects.equals(id, other.id) && Objects.equals(order, other.order) && quantity == other.quantity
 				&& Objects.equals(subtotal, other.subtotal);
 	}
+	
+    public static OrderItem from(Product product, int quantity) {
+        return new OrderItem(product, quantity, product.calculateSubtotal(quantity));
+    }
 
 }

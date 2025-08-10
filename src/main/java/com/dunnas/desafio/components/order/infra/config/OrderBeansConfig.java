@@ -8,6 +8,7 @@ import com.dunnas.desafio.components.order.application.gateways.OrderRepositoryG
 import com.dunnas.desafio.components.order.application.mappers.OrderDomainMapper;
 import com.dunnas.desafio.components.order.application.usecases.CreateOrderUseCase;
 import com.dunnas.desafio.components.order.application.usecases.impl.CreateOrderUseCaseImpl;
+import com.dunnas.desafio.components.order.domain.services.OrderCreationService;
 import com.dunnas.desafio.components.product.application.gateways.ProductRepositoryGateway;
 import com.dunnas.desafio.components.supplier.application.gateways.SupplierRepositoryGateway;
 import com.dunnas.desafio.shared.audit.CurrentUserProvider;
@@ -18,12 +19,19 @@ public class OrderBeansConfig {
 	@Bean
 	CreateOrderUseCase createOrderUseCase(OrderRepositoryGateway orderRepositoryGateway,
 			OrderDomainMapper orderDomainMapper, CurrentUserProvider currentUserProvider,
-			ClientRepositoryGateway clientRepositoryGateway, ProductRepositoryGateway productRepositoryGateway, SupplierRepositoryGateway supplierRepositoryGateway) {
-		return new CreateOrderUseCaseImpl(orderRepositoryGateway, orderDomainMapper, currentUserProvider, clientRepositoryGateway, productRepositoryGateway, supplierRepositoryGateway);
+			ClientRepositoryGateway clientRepositoryGateway, ProductRepositoryGateway productRepositoryGateway,
+			SupplierRepositoryGateway supplierRepositoryGateway, OrderCreationService orderCreationService) {
+		return new CreateOrderUseCaseImpl(orderRepositoryGateway, orderDomainMapper, currentUserProvider,
+				clientRepositoryGateway, productRepositoryGateway, supplierRepositoryGateway, orderCreationService);
 	}
 
 	@Bean
 	OrderDomainMapper orderDomainMapper() {
 		return new OrderDomainMapper();
+	}
+	
+	@Bean
+	OrderCreationService orderCreationService() {
+		return new OrderCreationService();
 	}
 }

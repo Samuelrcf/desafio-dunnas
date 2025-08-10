@@ -24,7 +24,7 @@ public class UserController {
     private final UserDtoMapper mapper;
     private final AuthenticationUseCase authenticationUseCase;
     
-    @GetMapping
+    @GetMapping("/register")
     public String showForm() {
         return "register";
     }

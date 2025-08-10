@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION validate_unique_supplier()
 RETURNS TRIGGER AS $$
 DECLARE
-    existing_supplier_id bigint;  -- aqui, trocar para bigint
+    existing_supplier_id bigint;  
 BEGIN
     SELECT p.supplier_id INTO existing_supplier_id
     FROM tb_orders_items oi

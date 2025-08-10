@@ -48,25 +48,28 @@ public class SecurityConfig {
                         config.setMaxAge(3600L);
                         return config;
                     }
-                })).authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-                .build();
-                /*.exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
+                }))//.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                //.build();
+                .exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(authorize -> authorize
-                        //.requestMatchers("/users/**", "/register").permitAll()
+                		
+                		.requestMatchers(HttpMethod.GET, "/register", "/login").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/clients/history").hasRole("CLIENT")
-                        .requestMatchers(HttpMethod.PUT, "/clients/credit").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.GET, "/clients/**").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/clients/**").hasRole("CLIENT")
                         
-                        .requestMatchers(HttpMethod.GET, "/suppliers/history").hasRole("SUPPLIER")
-
-			    		.requestMatchers(HttpMethod.POST, "/orders").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.GET, "/suppliers/**").hasRole("SUPPLIER")
+			    		.requestMatchers(HttpMethod.POST, "/supplier/**").hasRole("SUPPLIER")
 			    		
-			    		.requestMatchers(HttpMethod.POST, "/products").hasRole("SUPPLIER")
+			    		.requestMatchers(HttpMethod.POST, "/products/**").hasRole("SUPPLIER")
+			    		.requestMatchers(HttpMethod.GET, "/products/supplier", "/products/new").hasRole("SUPPLIER")
 			    		
-                        .anyRequest().permitAll())
+			    		.requestMatchers(HttpMethod.POST, "/orders/**").hasRole("CLIENT")
+			    		
+                        .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();*/
+                .build();
     }
 	
     @Bean

@@ -6,7 +6,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.dunnas.desafio.components.user.application.gateways.TokenProvider;
@@ -28,23 +27,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 		this.tokenProvider = tokenProvider;
 		this.userRepository = userRepository;
 	}
-
-    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
-
-    private boolean isPublicEndpoint(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        return pathMatcher.match("/register/**", path) ||
-               pathMatcher.match("/login/**", path);
-    }
     
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
-        if (isPublicEndpoint(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         try {
             String token = this.recoverToken(request);

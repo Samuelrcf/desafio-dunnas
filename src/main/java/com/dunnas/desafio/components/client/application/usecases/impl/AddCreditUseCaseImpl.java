@@ -32,8 +32,6 @@ public class AddCreditUseCaseImpl implements AddCreditUseCase {
 		
 		Client client = clientRepositoryGateway.findByUserEntityId(currentUserId).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-		//Client client = clientRepositoryGateway.findById(1L).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado")); //excluir
-
 	    BigDecimal newBalance = client.getBalance().add(input.amount());
 	    client.setBalance(newBalance);
 		

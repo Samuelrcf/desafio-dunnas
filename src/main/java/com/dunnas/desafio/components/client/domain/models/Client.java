@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+import com.dunnas.desafio.components.order.application.exceptions.InsufficientBalanceException;
 import com.dunnas.desafio.components.order.domain.models.Order;
 import com.dunnas.desafio.components.user.domain.models.User;
 
@@ -126,5 +127,15 @@ public class Client {
 	    }
 	    this.balance = this.balance.subtract(amount);
 	}
+	
+    public void ensureHasBalance(BigDecimal amount) {
+        if (balance.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Saldo insuficiente");
+        }
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
+    }
 
 }

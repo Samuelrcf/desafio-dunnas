@@ -32,24 +32,6 @@ public class Order {
 		this.creationDate = creationDate;
 		this.orderItems = orderItems;
 	}
-
-	public Order(Long id, Client client, List<Product> products, BigDecimal total, LocalDateTime creationDate,
-			List<OrderItem> orderItems) {
-		this.id = id;
-		this.client = client;
-		this.products = products;
-		this.total = total;
-		this.creationDate = creationDate;
-		this.setOrderItems(orderItems);
-	}
-
-	public Order(Long id, Client client, List<Product> products, BigDecimal total, LocalDateTime creationDate) {
-		this.id = id;
-		this.client = client;
-		this.products = products;
-		this.total = total;
-		this.creationDate = creationDate;
-	}
 	
 	public Order(UUID orderCode, Client client, Supplier supplier, List<Product> products, List<OrderItem> orderItems, BigDecimal total, LocalDateTime creationDate) {
 		this.orderCode = orderCode;
@@ -144,5 +126,23 @@ public class Order {
 				&& Objects.equals(orderItems, other.orderItems) && Objects.equals(products, other.products)
 				&& Objects.equals(supplier, other.supplier) && Objects.equals(total, other.total);
 	}
+	
+    public static Order create(Client client, Supplier supplier, List<OrderItem> items) {
+        BigDecimal total = items.stream()
+                .map(OrderItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        client.decreaseBalance(total);
+
+        return new Order(
+                UUID.randomUUID(),
+                client,
+                supplier,
+                items.stream().map(OrderItem::getProduct).toList(),
+                items,
+                total,
+                LocalDateTime.now()
+        );
+    }
 
 }
