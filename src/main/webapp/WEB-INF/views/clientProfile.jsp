@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
     <title>Perfil do Cliente</title>
@@ -205,10 +206,20 @@
         <span class="info-label">CPF:</span>
         <span class="info-value">${client.cpf}</span>
     </div>
-    <div class="info-row">
-        <span class="info-label">Data de nascimento:</span>
-        <span class="info-value">${client.birthDate}</span>
-    </div>
+	<div class="info-row">
+	    <span class="info-label">Data de nascimento:</span>
+	    <span class="info-value">
+	        <c:set var="dt" value="${client.birthDate.toString()}" />
+	        <c:set var="datePart" value="${fn:substring(dt, 0, 10)}" />
+	        
+	        <c:set var="day" value="${fn:substring(datePart, 8, 10)}" />
+	        <c:set var="month" value="${fn:substring(datePart, 5, 7)}" />
+	        <c:set var="year" value="${fn:substring(datePart, 0, 4)}" />
+
+	        <c:out value="${day}/${month}/${year}" />
+	    </span>
+	</div>
+
     <div class="info-row">
         <span class="info-label">Saldo:</span>
         <span class="info-value">R$ ${client.balance}</span>
