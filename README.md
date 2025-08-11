@@ -258,3 +258,17 @@ createdb seubanco
 
 # 4. Inicializar a aplicação
 mvn spring-boot:run
+
+## 👥 Usuários Pré-Criados para Testes
+
+O sistema já contém alguns usuários pré-cadastrados no banco (via migração), para facilitar testes:
+
+| Tipo       | Usuário     | Senha     |
+|------------|-------------|-----------|
+| Cliente    | joao123     | 12345678  |
+| Cliente    | maria123    | 12345678  |
+| Fornecedor | fornecedor1 | 12345678  |
+| Fornecedor | fornecedor2 | 12345678  |
+
+Use essas credenciais para acessar e testar o sistema sem necessidade de cadastro inicial.
+
