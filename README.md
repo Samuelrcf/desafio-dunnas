@@ -259,7 +259,7 @@ createdb seubanco
 # 4. Inicializar a aplicação
 mvn spring-boot:run
 
----
+```
 
 ## 👥 Usuários Pré-Criados para Testes
 
