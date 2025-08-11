@@ -198,7 +198,7 @@ Cada componente é dividido em quatro camadas principais:
 - Serviços de domínio
 
 ### Application
-- Casos de uso
+- Casos de uso e regras de aplicação
 - Mappers para conversão entre objetos de aplicação e modelo de domínio
 - Interfaces (gateways) que a aplicação utiliza para interagir com o mundo externo
 
@@ -212,7 +212,7 @@ Cada componente é dividido em quatro camadas principais:
 ### Web
 - Controladores para páginas JSP
 - DTOs
-- Mappers para conversão entre DTOs e objetos de aplicação (inputs e outputs)
+- Mappers para conversão entre DTOs e objetos de aplicação 
   
 ---
 
