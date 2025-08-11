@@ -1,5 +1,7 @@
 package com.dunnas.desafio.components.product.domain.models;
 
+import java.util.Objects;
+
 public class Coupon {
     private Long id;
     private String name;
@@ -28,4 +30,23 @@ public class Coupon {
     public Discount getDiscount() {
         return discount;
     }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(code, discount, id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Coupon other = (Coupon) obj;
+		return Objects.equals(code, other.code) && Objects.equals(discount, other.discount)
+				&& Objects.equals(id, other.id) && Objects.equals(name, other.name);
+	}
+    
 }

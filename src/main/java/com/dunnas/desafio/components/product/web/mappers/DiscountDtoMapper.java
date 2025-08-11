@@ -9,10 +9,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class DiscountDtoMapper {
     public CreateDiscountUseCaseInput createDtoToUseCaseInput(CreateDiscountDto createDiscountDto) {
+        if(createDiscountDto == null) {
+            return null;
+        }
+
         return new CreateDiscountUseCaseInput(createDiscountDto.getValue(), createDiscountDto.getProductId());
     }
 
     public ReadDiscountDto domainToReadDto(Discount discount) {
-        return new ReadDiscountDto(discount.getId(), discount.getValue(), discount.getProductId());
+        if(discount == null) {
+            return null;
+        }
+
+        return new ReadDiscountDto(discount.getId(), discount.getValue());
     }
 }

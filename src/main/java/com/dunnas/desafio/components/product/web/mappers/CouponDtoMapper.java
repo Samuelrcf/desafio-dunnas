@@ -19,6 +19,10 @@ public class CouponDtoMapper {
 
     public CreateCouponUseCaseInput createDtoToUseCaseInput(
             CreateCouponDto createCouponDto) {
+        if(createCouponDto.getDiscount() == null){
+            return null;
+        }
+
         CreateDiscountUseCaseInput createDiscountUseCaseInput = discountDtoMapper.createDtoToUseCaseInput(
                 createCouponDto.getDiscount());
 
@@ -27,6 +31,9 @@ public class CouponDtoMapper {
     }
 
     public ReadCouponDto domainToReadDto(Coupon coupon) {
+        if(coupon == null){
+            return null;
+        }
         ReadDiscountDto discountDto = discountDtoMapper.domainToReadDto(coupon.getDiscount());
         return new ReadCouponDto(coupon.getId(), coupon.getName(), coupon.getCode(), discountDto);
     }

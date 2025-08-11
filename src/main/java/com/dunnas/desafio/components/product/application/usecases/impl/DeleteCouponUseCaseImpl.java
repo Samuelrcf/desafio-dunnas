@@ -8,21 +8,22 @@ import com.dunnas.desafio.components.product.application.usecases.DeleteDiscount
 import com.dunnas.desafio.shared.exceptions.ApplicationException;
 
 public class DeleteCouponUseCaseImpl implements DeleteCouponUseCase {
+
     private final ProductRepositoryGateway productRepositoryGateway;
     private final CouponRepositoryGateway couponRepositoryGateway;
 
-    public DeleteCouponUseCaseImpl(CouponRepositoryGateway couponRepositoryGateway, ProductRepositoryGateway productRepositoryGateway) {
+    public DeleteCouponUseCaseImpl(CouponRepositoryGateway couponRepositoryGateway,
+            ProductRepositoryGateway productRepositoryGateway) {
         this.couponRepositoryGateway = couponRepositoryGateway;
         this.productRepositoryGateway = productRepositoryGateway;
     }
 
     @Override
     public void execute(Long id) {
-        boolean productExists = productRepositoryGateway.existsById(id);
-        if (!productExists) {
+        boolean couponExists = couponRepositoryGateway.existsById(id);
+        if (!couponExists) {
             throw new ApplicationException(
-                    "Não foi possível deletar o cupom para o produto informado, pois o produto "
-                            + "não existe.");
+                    "Não foi possível deletar o cupom para o produto informado, pois o cupom não existe ");
         }
 
         couponRepositoryGateway.deleteById(id);

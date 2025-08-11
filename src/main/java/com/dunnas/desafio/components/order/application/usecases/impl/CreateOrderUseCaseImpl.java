@@ -3,6 +3,8 @@ package com.dunnas.desafio.components.order.application.usecases.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.dunnas.desafio.components.client.application.gateways.ClientRepositoryGateway;
 import com.dunnas.desafio.components.client.domain.models.Client;
@@ -61,7 +63,14 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	    if (products.isEmpty()) {
 	        throw new ObjectNotFoundException("Nenhum produto encontrado");
 	    }
-	    
+
+	    // Montar o Set dos produtos com cupom aplicado
+	    Set<Long> productsWithCouponApplied = input.products().stream()
+	        .filter(ProductQuantityInput::applyCoupon)
+	        .map(ProductQuantityInput::productId)
+	        .collect(Collectors.toSet());
+
+	    // Agrupar os itens por fornecedor (ajuste esse método para aceitar também o Set e criar OrderItem sem a flag, só com produto e qty)
 	    Map<Supplier, List<OrderItem>> groupedItems = orderCreationService.groupItemsBySupplier(input.products(), products);
 
 	    List<CreateOrderUseCaseOutput> outputs = new ArrayList<>();
@@ -70,7 +79,8 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	        Supplier supplier = supplierRepositoryGateway.findById(entry.getKey().getId())
 	                .orElseThrow(() -> new ObjectNotFoundException("Fornecedor não encontrado"));
 
-	        Order order = Order.create(client, supplier, entry.getValue());
+	        // Use a nova assinatura do método create passando também o Set de produtos com cupom
+	        Order order = Order.create(client, supplier, entry.getValue(), productsWithCouponApplied);
 	        order = orderRepositoryGateway.create(order);
 
 	        outputs.add(orderDomainMapper.domainToCreateOrderUseCaseOutput(order));

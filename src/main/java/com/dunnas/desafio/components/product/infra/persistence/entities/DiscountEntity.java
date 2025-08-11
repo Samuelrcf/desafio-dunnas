@@ -1,14 +1,15 @@
 package com.dunnas.desafio.components.product.infra.persistence.entities;
 
+import java.math.BigDecimal;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "tb_discounts")
+@SQLDelete(sql = "UPDATE tb_discounts SET deleted = true WHERE id = ?")
+@SQLRestriction(value = "deleted = false")
 public class DiscountEntity {
 
     @Id
@@ -25,11 +28,7 @@ public class DiscountEntity {
     private Long id;
 
     private BigDecimal value;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private ProductEntity productEntity;
-
-    @OneToOne(mappedBy = "discount")
-    private CouponEntity couponEntity;
+    
+    private Boolean deleted = false;
 }
+

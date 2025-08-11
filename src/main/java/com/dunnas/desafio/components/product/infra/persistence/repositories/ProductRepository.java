@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.dunnas.desafio.components.product.infra.persistence.entities.CouponEntity;
+import com.dunnas.desafio.components.product.infra.persistence.entities.DiscountEntity;
 import com.dunnas.desafio.components.product.infra.persistence.entities.ProductEntity;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Long>{
@@ -19,5 +21,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>{
 
 	@Query(value = "SELECT * FROM find_all_active_products()", nativeQuery = true)
 	List<ProductEntity> findByDeletedFalse();
+	
+	@Query("SELECT p.discountEntity FROM ProductEntity p WHERE p.id = :productId AND p.deleted = false")
+	Optional<DiscountEntity> findDiscountByProductId(@Param("productId") Long productId);
+
+	@Query("SELECT p.couponEntity FROM ProductEntity p WHERE p.id = :productId AND p.deleted = false")
+	Optional<CouponEntity> findCouponByProductId(@Param("productId") Long productId);
 
 }

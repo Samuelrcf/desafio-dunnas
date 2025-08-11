@@ -27,7 +27,7 @@ public class OrderDtoMapper {
 	    List<ProductQuantityInput> inputList = new ArrayList<>();
 
 	    for (ProductQuantityDto dto : requestDto.getOrderProductDto()) {
-	    	ProductQuantityInput input = new ProductQuantityInput(dto.getProductId(), dto.getQuantity());
+	    	ProductQuantityInput input = new ProductQuantityInput(dto.getProductId(), dto.getQuantity(), dto.getApplyCoupon());
 	        inputList.add(input);
 	    }
 

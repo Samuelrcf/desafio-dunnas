@@ -1,15 +1,15 @@
 package com.dunnas.desafio.components.product.infra.persistence.gateways;
 
-import com.dunnas.desafio.components.product.application.gateways.CouponRepositoryGateway;
-import com.dunnas.desafio.components.product.domain.models.Coupon;
-import com.dunnas.desafio.components.product.domain.models.Discount;
-import com.dunnas.desafio.components.product.infra.persistence.entities.CouponEntity;
-import com.dunnas.desafio.components.product.infra.persistence.entities.DiscountEntity;
-import com.dunnas.desafio.components.product.infra.persistence.mappers.CouponEntityMapper;
-import com.dunnas.desafio.components.product.infra.persistence.repositories.CouponRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.dunnas.desafio.components.product.application.gateways.CouponRepositoryGateway;
+import com.dunnas.desafio.components.product.domain.models.Coupon;
+import com.dunnas.desafio.components.product.infra.persistence.entities.CouponEntity;
+import com.dunnas.desafio.components.product.infra.persistence.mappers.CouponEntityMapper;
+import com.dunnas.desafio.components.product.infra.persistence.repositories.CouponRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
@@ -28,5 +28,10 @@ public class CouponRepositoryGatewayImpl implements CouponRepositoryGateway {
     @Override
     public void deleteById(Long id) {
         couponRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return couponRepository.existsById(id);
     }
 }

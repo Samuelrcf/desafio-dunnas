@@ -44,10 +44,8 @@ public class ProductBeansConfig {
 
     @Bean
     CreateDiscountUseCase createDiscountUseCase(ProductRepositoryGateway productRepositoryGateway,
-            ProductDomainMapper productDomainMapper,
-            DiscountRepositoryGateway discountRepositoryGateway) {
-        return new CreateDiscountUseCaseImpl(productRepositoryGateway, productDomainMapper,
-                discountRepositoryGateway);
+            ProductDomainMapper productDomainMapper) {
+        return new CreateDiscountUseCaseImpl(productRepositoryGateway, productDomainMapper);
     }
 
     @Bean

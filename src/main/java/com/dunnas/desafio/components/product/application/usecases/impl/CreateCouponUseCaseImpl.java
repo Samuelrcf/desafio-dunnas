@@ -12,6 +12,7 @@ import com.dunnas.desafio.components.product.domain.models.Discount;
 import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.shared.exceptions.ApplicationException;
 import java.util.Optional;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 
 public class CreateCouponUseCaseImpl implements CreateCouponUseCase {
 
@@ -33,20 +34,17 @@ public class CreateCouponUseCaseImpl implements CreateCouponUseCase {
 
     @Override
     public CreateProductUseCaseOutput execute(CreateCouponUseCaseInput input) {
-        boolean productExists = productRepositoryGateway.existsById(input.discount().productId());
-        if (!productExists) {
-            throw new ApplicationException(
-                    "Não foi possível criar o cupom para o produto informado, pois o produto "
-                            + "não existe.");
-        }
+        Product product = productRepositoryGateway.findById(input.discount().productId())
+                .orElseThrow(() -> new ApplicationException(
+                        "Não foi possível criar o cupom, pois o produto com ID "
+                                + input.discount().productId() + " não existe."));
 
-        Discount discount = new Discount(null, input.discount().value(),
-                input.discount().productId());
+        Discount discount = new Discount(null, input.discount().value());
         Coupon coupon = new Coupon(null, input.name(), input.code(), discount);
-        couponRepositoryGateway.create(coupon);
 
-        Optional<Product> productWithNewDiscount = productRepositoryGateway.findById(
-                input.discount().productId());
-        return productDomainMapper.domainToOutput(productWithNewDiscount.get());
+        product.addCoupon(coupon);
+
+        Product productWithCoupon = productRepositoryGateway.update(product);
+        return productDomainMapper.domainToOutput(productWithCoupon);
     }
 }

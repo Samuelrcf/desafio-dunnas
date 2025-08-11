@@ -1,7 +1,6 @@
 package com.dunnas.desafio.components.product.infra.persistence.entities;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
 
@@ -14,7 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,23 +26,26 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_products")
 @SQLDelete(sql = "UPDATE tb_products SET deleted = true WHERE id = ?")
 public class ProductEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	private String name;
-	private String description;
-	private BigDecimal price;
-	@ManyToOne
-	@JoinColumn(name = "supplier_id")
-	private SupplierEntity supplierEntity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "product_id")
-	private List<DiscountEntity> discountEntities;
+    private String name;
+    private String description;
+    private BigDecimal price;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "product_id")
-	private List<CouponEntity> couponEntities;
-	
-	private Boolean deleted = true;
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private SupplierEntity supplierEntity;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "discount_id")
+    private DiscountEntity discountEntity;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "coupon_id")
+    private CouponEntity couponEntity;
+
+    private Boolean deleted = false;
 }
+

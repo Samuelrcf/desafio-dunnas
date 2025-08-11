@@ -4,6 +4,7 @@ import com.dunnas.desafio.components.product.domain.models.Coupon;
 import com.dunnas.desafio.components.product.domain.models.Discount;
 import com.dunnas.desafio.components.product.infra.persistence.entities.CouponEntity;
 import com.dunnas.desafio.components.product.infra.persistence.entities.DiscountEntity;
+import com.dunnas.desafio.components.supplier.domain.models.Supplier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,24 +35,19 @@ public class ProductEntityMapper {
         entity.setDescription(product.getDescription());
         entity.setPrice(product.getPrice());
         entity.setDeleted(false);
+
         entity.setSupplierEntity(supplierEntityMapper.modelToEntity(product.getSupplier()));
 
-        if (product.getDiscounts() != null) {
-            if (entity.getDiscountEntities() != null) {
-                for (Discount discount : product.getDiscounts()) {
-                    entity.getDiscountEntities().add(discountEntityMapper.modelToEntity(discount));
-                }
-            }
+        if(product.getDiscount() != null) {
+            DiscountEntity discountEntity = discountEntityMapper.modelToEntity(product.getDiscount());
+            entity.setDiscountEntity(discountEntity);
         }
 
-        if (product.getCoupons() != null) {
-            if (entity.getDiscountEntities() != null) {
-                for (Coupon coupon : product.getCoupons()) {
-
-                    entity.getCouponEntities().add(couponEntityMapper.modelToEntity(coupon));
-                }
-            }
+        if(product.getCoupon() != null) {
+            CouponEntity couponEntity = couponEntityMapper.modelToEntity(product.getCoupon());
+            entity.setCouponEntity(couponEntity);
         }
+
 
         return entity;
     }
@@ -61,28 +57,18 @@ public class ProductEntityMapper {
             return null;
         }
 
-        List<Discount> discounts = new ArrayList<>();
-        if (entity.getDiscountEntities() != null) {
-            for (DiscountEntity discountEntity : entity.getDiscountEntities()) {
-                discounts.add(discountEntityMapper.entityToModel(discountEntity));
-            }
-        }
-
-        List<Coupon> coupons = new ArrayList<>();
-        if (entity.getCouponEntities() != null) {
-            for (CouponEntity couponEntity : entity.getCouponEntities()) {
-                coupons.add(couponEntityMapper.entityToModel(couponEntity));
-            }
-        }
+        Supplier supplier = supplierEntityMapper.entityToModel(entity.getSupplierEntity());
+        Discount discount = discountEntityMapper.entityToModel(entity.getDiscountEntity());
+        Coupon coupon = couponEntityMapper.entityToModel(entity.getCouponEntity());
 
         return new Product(
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPrice(),
-                supplierEntityMapper.entityToModel(entity.getSupplierEntity()),
-                discounts,
-                coupons
+                supplier,
+                discount,
+                coupon
         );
     }
 

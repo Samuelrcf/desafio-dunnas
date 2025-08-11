@@ -85,6 +85,14 @@ public class ProductRepositoryGatewayImpl implements ProductRepositoryGateway{
 	}
 
 	@Override
+	public Product update(Product Product) {
+		ProductEntity entity = mapper.modelToEntity(Product);
+
+		repository.save(entity);
+		return mapper.entityToModel(entity);
+	}
+
+	@Override
 	public void delete(Long id) {
 		repository.deleteById(id);
 	}

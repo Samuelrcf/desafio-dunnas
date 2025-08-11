@@ -10,8 +10,8 @@ public class ProductDomainMapper {
     public CreateProductUseCaseOutput domainToOutput(Product domain) {
 
         return new CreateProductUseCaseOutput(domain.getId(), domain.getName(),
-                domain.getDescription(), domain.getPrice(), domain.getDiscounts(),
-                domain.getCoupons());
+                domain.getDescription(), domain.getPrice(), domain.getDiscount(),
+                domain.getCoupon());
     }
 
     public List<CreateProductUseCaseOutput> listDomainToOutput(List<Product> models) {

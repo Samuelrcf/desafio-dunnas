@@ -10,5 +10,4 @@ import lombok.Data;
 public class ReadDiscountDto {
     private Long id;
     private BigDecimal value;
-    private Long productId;
 }

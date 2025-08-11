@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import com.dunnas.desafio.components.client.domain.models.Client;
@@ -127,22 +128,46 @@ public class Order {
 				&& Objects.equals(supplier, other.supplier) && Objects.equals(total, other.total);
 	}
 	
-    public static Order create(Client client, Supplier supplier, List<OrderItem> items) {
-        BigDecimal total = items.stream()
-                .map(OrderItem::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+	public static Order create(Client client, Supplier supplier, List<OrderItem> items, Set<Long> productsWithCouponApplied) {
+	    BigDecimal total = items.stream()
+	        .map(item -> {
+	            BigDecimal price = item.getProduct().getPrice();
 
-        client.decreaseBalance(total);
+	            BigDecimal discountFraction = BigDecimal.ZERO;
+	            if (item.getProduct().getDiscount() != null) {
+	                discountFraction = item.getProduct().getDiscount().getValue(); // ex: 0.10
+	            }
 
-        return new Order(
-                UUID.randomUUID(),
-                client,
-                supplier,
-                items.stream().map(OrderItem::getProduct).toList(),
-                items,
-                total,
-                LocalDateTime.now()
-        );
-    }
+	            BigDecimal priceAfterProductDiscount = price.multiply(BigDecimal.ONE.subtract(discountFraction));
+	            if (priceAfterProductDiscount.compareTo(BigDecimal.ZERO) < 0) {
+	                priceAfterProductDiscount = BigDecimal.ZERO;
+	            }
+
+	            BigDecimal couponFraction = BigDecimal.ZERO;
+	            if (productsWithCouponApplied.contains(item.getProduct().getId()) && item.getProduct().getCoupon() != null) {
+	                couponFraction = item.getProduct().getCoupon().getDiscount().getValue(); // ex: 0.15
+	            }
+
+	            BigDecimal priceAfterAllDiscounts = priceAfterProductDiscount.multiply(BigDecimal.ONE.subtract(couponFraction));
+	            if (priceAfterAllDiscounts.compareTo(BigDecimal.ZERO) < 0) {
+	                priceAfterAllDiscounts = BigDecimal.ZERO;
+	            }
+
+	            return priceAfterAllDiscounts.multiply(BigDecimal.valueOf(item.getQuantity()));
+	        })
+	        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+	    client.decreaseBalance(total);
+
+	    return new Order(
+	        UUID.randomUUID(),
+	        client,
+	        supplier,
+	        items.stream().map(OrderItem::getProduct).toList(),
+	        items,
+	        total,
+	        LocalDateTime.now()
+	    );
+	}
 
 }

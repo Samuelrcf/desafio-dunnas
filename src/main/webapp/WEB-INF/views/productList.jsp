@@ -139,7 +139,6 @@
             background-color: #145ca4;
         }
 
-        /* Modal carrinho */
         .modal {
             display: none;
             position: fixed;
@@ -245,6 +244,58 @@
 		    background-color: #f8d7da;  
 		    color: #721c24;             
 		    border: 1px solid #f5c6cb;
+		}		.apply-coupon-checkbox {
+		    position: absolute;
+		    opacity: 0;
+		    width: 0;
+		    height: 0;
+		}
+
+		/* Label estilizado como "checkbox custom" */
+		label {
+		    display: inline-flex;
+		    align-items: center;
+		    cursor: pointer;
+		    user-select: none;
+		    position: relative;
+		    padding-left: 25px;
+		    font-weight: normal;
+		    color: #333;
+		    font-size: 0.9rem;
+		}
+
+		/* Caixa quadrada custom */
+		label::before {
+		    content: "";
+		    position: absolute;
+		    left: 0;
+		    top: 50%;
+		    transform: translateY(-50%);
+		    width: 18px;
+		    height: 18px;
+		    border: 2px solid #d32f2f;
+		    border-radius: 4px;
+		    background-color: white;
+		    box-sizing: border-box;
+		    transition: background-color 0.2s, border-color 0.2s;
+		}
+
+		/* Checkmark aparece quando checkbox está marcado */
+		.apply-coupon-checkbox:checked + label::before {
+		    background-color: #d32f2f;
+		    border-color: #d32f2f;
+		}
+
+		/* Ícone de check (✔) */
+		.apply-coupon-checkbox:checked + label::after {
+		    content: "✔";
+		    position: absolute;
+		    left: 3px;
+		    top: 50%;
+		    transform: translateY(-50%);
+		    color: white;
+		    font-size: 14px;
+		    font-weight: bold;
 		}
 		input[type=number]::-webkit-inner-spin-button, 
 		input[type=number]::-webkit-outer-spin-button {
@@ -271,38 +322,35 @@
             </div>
             <div class="product-description">${product.description}</div>
 
-            <c:if test="${not empty product.discounts}">
+            <c:if test="${not empty product.discount}">
                 <div class="discounts">
-                    <strong>Desconto(s):</strong>
-                    <ul>
-                        <c:forEach var="discount" items="${product.discounts}">
-                            <li>
-                                <c:out value="${discount.description}"/> - R$ 
-                                <fmt:formatNumber value="${discount.value}" type="number" minFractionDigits="2"/>
-                            </li>
-                        </c:forEach>
-                    </ul>
+					<c:if test="${product.discount != null}">
+					    <div class="discounts">
+					        <strong>Desconto:</strong>
+							<fmt:formatNumber value="${product.discount.value * 100}" maxFractionDigits="0" minFractionDigits="0" />%
+					    </div>
+					</c:if>
                 </div>
             </c:if>
 
-            <c:if test="${not empty product.coupons}">
-                <div class="coupons">
-                    <strong>Cupons:</strong>
-                    <ul>
-                        <c:forEach var="coupon" items="${product.coupons}">
-                            <li>
-                                <c:out value="${coupon.name}"/> (Código: <c:out value="${coupon.code}"/>) - 
-                                <c:choose>
-                                    <c:when test="${not empty coupon.discount}">
-                                        R$ <fmt:formatNumber value="${coupon.discount.value}" type="number" minFractionDigits="2"/>
-                                    </c:when>
-                                    <c:otherwise>-</c:otherwise>
-                                </c:choose>
-                            </li>
-                        </c:forEach>
-                    </ul>
-                </div>
-            </c:if>
+			<c:if test="${not empty product.coupon}">
+			    <div class="coupons" style="display: flex; align-items: center; gap: 8px;">
+			        <strong>Cupom:</strong>
+			        <span>
+			            <c:out value="${product.coupon.code}"/> - 
+			            <c:choose>
+			                <c:when test="${not empty product.coupon.discount}">
+			                    <fmt:formatNumber value="${product.coupon.discount.value * 100}" maxFractionDigits="0"/>%
+			                </c:when>
+			                <c:otherwise>-</c:otherwise>
+			            </c:choose>
+			        </span>
+
+			        <!-- Checkbox com id único para o label -->
+			        <input type="checkbox" class="apply-coupon-checkbox" id="applyCoupon_${product.id}" name="applyCoupon" value="true" />
+			        <label for="applyCoupon_${product.id}"></label>
+			    </div>
+			</c:if>
 
             <div class="quantity-control">
                 <button type="button" class="qty-decrease">-</button>
@@ -388,21 +436,27 @@
         const hiddenContainer = document.getElementById('hiddenInputsContainer');
         hiddenContainer.innerHTML = '';
 
-        for (const productId in cart) {
-            const item = cart[productId];
+		for (const productId in cart) {
+		    const item = cart[productId];
 
-            const inputId = document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = 'productIds';
-            inputId.value = productId;
-            hiddenContainer.appendChild(inputId);
+		    const inputId = document.createElement('input');
+		    inputId.type = 'hidden';
+		    inputId.name = 'productIds';
+		    inputId.value = productId;
+		    hiddenContainer.appendChild(inputId);
 
-            const inputQty = document.createElement('input');
-            inputQty.type = 'hidden';
-            inputQty.name = 'quantities';
-            inputQty.value = item.quantity;
-            hiddenContainer.appendChild(inputQty);
-        }
+		    const inputQty = document.createElement('input');
+		    inputQty.type = 'hidden';
+		    inputQty.name = 'quantities';
+		    inputQty.value = item.quantity;
+		    hiddenContainer.appendChild(inputQty);
+
+		    const inputCoupon = document.createElement('input');
+		    inputCoupon.type = 'hidden';
+		    inputCoupon.name = 'applyCoupon'; // ou applyCoupons[]
+		    inputCoupon.value = item.applyCoupon ? 'true' : 'false';
+		    hiddenContainer.appendChild(inputCoupon);
+		}
 
         const checkoutBtn = document.querySelector('#checkoutForm button[type="submit"]');
         checkoutBtn.disabled = Object.keys(cart).length === 0;
@@ -427,43 +481,46 @@
         }
     });
 
-    // Controles de quantidade e adicionar ao carrinho
-    document.querySelectorAll('.product-card').forEach(card => {
-        const decreaseBtn = card.querySelector('.qty-decrease');
-        const increaseBtn = card.querySelector('.qty-increase');
-        const qtyInput = card.querySelector('.qty-input');
+	document.querySelectorAll('.product-card').forEach(card => {
+	    const decreaseBtn = card.querySelector('.qty-decrease');
+	    const increaseBtn = card.querySelector('.qty-increase');
+	    const qtyInput = card.querySelector('.qty-input');
+	    const couponCheckbox = card.querySelector('.apply-coupon-checkbox');
 
-        decreaseBtn.addEventListener('click', () => {
-            let val = parseInt(qtyInput.value);
-            if (val > 1) qtyInput.value = val - 1;
-        });
+	    decreaseBtn.addEventListener('click', () => {
+	        let val = parseInt(qtyInput.value);
+	        if (val > 1) qtyInput.value = val - 1;
+	    });
 
-        increaseBtn.addEventListener('click', () => {
-            let val = parseInt(qtyInput.value);
-            qtyInput.value = val + 1;
-        });
+	    increaseBtn.addEventListener('click', () => {
+	        let val = parseInt(qtyInput.value);
+	        qtyInput.value = val + 1;
+	    });
 
-        card.querySelector('.add-cart-btn').addEventListener('click', () => {
-            const productId = card.getAttribute('data-id');
-            const productName = card.getAttribute('data-name');
-            const productPrice = parseFloat(card.getAttribute('data-price'));
-            const quantity = parseInt(qtyInput.value);
+	    card.querySelector('.add-cart-btn').addEventListener('click', () => {
+	        const productId = card.getAttribute('data-id');
+	        const productName = card.getAttribute('data-name');
+	        const productPrice = parseFloat(card.getAttribute('data-price'));
+	        const quantity = parseInt(qtyInput.value);
+	        const applyCoupon = couponCheckbox ? couponCheckbox.checked : false;
 
-            if (quantity < 1) {
-                alert('Quantidade deve ser pelo menos 1.');
-                return;
-            }
+	        if (quantity < 1) {
+	            alert('Quantidade deve ser pelo menos 1.');
+	            return;
+	        }
 
-            if (cart[productId]) {
-                cart[productId].quantity += quantity;
-            } else {
-                cart[productId] = { name: productName, price: productPrice, quantity: quantity };
-            }
+	        if (cart[productId]) {
+	            cart[productId].quantity += quantity;
+	            cart[productId].applyCoupon = applyCoupon; // atualiza se aplicar cupom
+	        } else {
+	            cart[productId] = { name: productName, price: productPrice, quantity: quantity, applyCoupon: applyCoupon };
+	        }
 
-            updateCartButton();
-            alert('Adicionado ' + quantity + ' x ' + productName + ' ao carrinho.');
-        });
-    });
+	        updateCartButton();
+	        alert('Adicionado ' + quantity + ' x ' + productName + (applyCoupon ? ' com cupom aplicado' : '') + ' ao carrinho.');
+	    });
+	});
+
 </script>
 
 </body>

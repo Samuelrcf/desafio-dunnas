@@ -23,4 +23,6 @@ public interface ProductRepositoryGateway {
     
     List<Product> findAllBySupplierId(Long id);
 
+    Product update(Product Product);
+
 }

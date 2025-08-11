@@ -30,58 +30,69 @@ public class OrderController {
 	private final ProductDtoMapper productMapper;
 	private final CreateOrderUseCase createOrderUseCase;
 	private final ListProductsUseCase listProductsUseCase;
-
 	@PostMapping("/create")
-	public String createOrder(@RequestParam List<Long> productIds, @RequestParam List<Integer> quantities,
-			Model model) {
-		try {
+	public String createOrder(
+	    @RequestParam List<Long> productIds,
+	    @RequestParam List<Integer> quantities,
+	    @RequestParam(required = false) List<Boolean> applyCoupon, // novo parâmetro
+	    Model model) {
+	    try {
+	        // Validação básica, incluindo tamanho de applyCoupon se não for null
+	        if (productIds == null || quantities == null || productIds.isEmpty() || quantities.isEmpty()
+	                || productIds.size() != quantities.size()
+	                || (applyCoupon != null && applyCoupon.size() != productIds.size())) {
+	            model.addAttribute("error", "Selecione pelo menos um produto com quantidade válida.");
+	            List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+	            List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+	            model.addAttribute("products", readProductDtos);
+	            return "productList";
+	        }
 
-			if (productIds == null || quantities == null || productIds.isEmpty() || quantities.isEmpty()
-					|| productIds.size() != quantities.size()) {
-				model.addAttribute("error", "Selecione pelo menos um produto com quantidade válida.");
-				List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
-				List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
-				model.addAttribute("products", readProductDtos);
-				return "productList";
-			}
+	        // Se applyCoupon for null, cria uma lista padrão de 'false'
+	        if (applyCoupon == null) {
+	            applyCoupon = new ArrayList<>();
+	            for (int i = 0; i < productIds.size(); i++) {
+	                applyCoupon.add(false);
+	            }
+	        }
 
-			List<ProductQuantityDto> productsQuantities = new ArrayList<>();
-			for (int i = 0; i < productIds.size(); i++) {
-				int qty = quantities.get(i);
-				if (qty > 0) {
-					productsQuantities.add(new ProductQuantityDto(productIds.get(i), qty));
-				}
-			}
+	        List<ProductQuantityDto> productsQuantities = new ArrayList<>();
+	        for (int i = 0; i < productIds.size(); i++) {
+	            int qty = quantities.get(i);
+	            if (qty > 0) {
+	                productsQuantities.add(new ProductQuantityDto(productIds.get(i), qty, applyCoupon.get(i)));
+	            }
+	        }
 
-			if (productsQuantities.isEmpty()) {
-				model.addAttribute("error", "Selecione pelo menos um produto com quantidade maior que zero.");
-				List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
-				List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
-				model.addAttribute("products", readProductDtos);
-				return "productList";
-			}
+	        if (productsQuantities.isEmpty()) {
+	            model.addAttribute("error", "Selecione pelo menos um produto com quantidade maior que zero.");
+	            List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+	            List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+	            model.addAttribute("products", readProductDtos);
+	            return "productList";
+	        }
 
-			CreateOrderDto createOrderDto = new CreateOrderDto(productsQuantities);
-			CreateOrderUseCaseInput input = mapper.createDtoToCreateOrderUseCaseInput(createOrderDto);
+	        CreateOrderDto createOrderDto = new CreateOrderDto(productsQuantities);
+	        CreateOrderUseCaseInput input = mapper.createDtoToCreateOrderUseCaseInput(createOrderDto);
 
-			createOrderUseCase.execute(input);
+	        createOrderUseCase.execute(input);
 
-			List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
-			List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
-			model.addAttribute("products", readProductDtos);
+	        List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+	        List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+	        model.addAttribute("products", readProductDtos);
 
-			model.addAttribute("success", "Pedido realizado com sucesso!");
+	        model.addAttribute("success", "Pedido realizado com sucesso!");
 
-			return "productList";
-			
-		} catch (Exception e) {
-			model.addAttribute("error", "Erro ao processar pedido: " + e.getMessage());
-			List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
-			List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
-			model.addAttribute("products", readProductDtos);
+	        return "productList";
 
-			return "productList"; 
-		}
+	    } catch (Exception e) {
+	        model.addAttribute("error", "Erro ao processar pedido: " + e.getMessage());
+	        List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+	        List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+	        model.addAttribute("products", readProductDtos);
+
+	        return "productList";
+	    }
 	}
 
 }

@@ -9,15 +9,13 @@ public class Discount {
 
     private Long id;
     private BigDecimal value;
-    private Long productId;
 
 
-    public Discount(Long id, BigDecimal value, Long productId) {
+    public Discount(Long id, BigDecimal value) {
         validateValue(value);
 
         this.id = id;
         this.value = value.setScale(SCALE, RoundingMode.HALF_EVEN);
-        this.productId = productId;
     }
 
     public void validateValue(BigDecimal value) {
@@ -38,10 +36,6 @@ public class Discount {
 
     public BigDecimal getValue() {
         return value;
-    }
-
-    public Long getProductId() {
-        return productId;
     }
 
     @Override

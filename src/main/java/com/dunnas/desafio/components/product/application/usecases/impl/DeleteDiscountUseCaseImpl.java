@@ -1,6 +1,5 @@
 package com.dunnas.desafio.components.product.application.usecases.impl;
 
-import com.dunnas.desafio.components.product.application.gateways.CouponRepositoryGateway;
 import com.dunnas.desafio.components.product.application.gateways.DiscountRepositoryGateway;
 import com.dunnas.desafio.components.product.application.gateways.ProductRepositoryGateway;
 import com.dunnas.desafio.components.product.application.usecases.DeleteDiscountUseCase;
@@ -17,11 +16,10 @@ public class DeleteDiscountUseCaseImpl implements DeleteDiscountUseCase {
 
     @Override
     public void execute(Long id) {
-        boolean productExists = productRepositoryGateway.existsById(id);
-        if (!productExists) {
+        boolean discountExists = discountRepositoryGateway.existsById(id);
+        if (!discountExists) {
             throw new ApplicationException(
-                    "Não foi possível deletar o desconto para o produto informado, pois o produto "
-                            + "não existe.");
+                    "Não foi possível deletar o desconto, pois o desconto não existe.");
         }
 
         discountRepositoryGateway.deleteById(id);

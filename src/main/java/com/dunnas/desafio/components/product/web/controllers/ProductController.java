@@ -1,10 +1,10 @@
 package com.dunnas.desafio.components.product.web.controllers;
 
+import com.dunnas.desafio.components.product.application.usecases.DeleteCouponUseCase;
+import com.dunnas.desafio.components.product.application.usecases.DeleteDiscountUseCase;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -33,10 +32,6 @@ import com.dunnas.desafio.components.product.web.dtos.ReadProductDto;
 import com.dunnas.desafio.components.product.web.mappers.CouponDtoMapper;
 import com.dunnas.desafio.components.product.web.mappers.DiscountDtoMapper;
 import com.dunnas.desafio.components.product.web.mappers.ProductDtoMapper;
-import com.dunnas.desafio.shared.response.ApiSuccessResponse;
-import com.dunnas.desafio.shared.response.ResponseUtil;
-
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -56,6 +51,9 @@ public class ProductController {
     private final CouponDtoMapper couponDtoMapper;
     private final ListProductsUseCase listProductsUseCase;
     private final ListProductsBySupplierUseCase listProductsBySupplierUseCase;
+    private final DeleteDiscountUseCase deleteDiscountUseCase;
+    private final DeleteCouponUseCase deleteCouponUseCase;
+
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
@@ -94,15 +92,24 @@ public class ProductController {
         return "redirect:/products/supplier";
     }
 
-    @PostMapping("/coupons")
-    public ResponseEntity<ApiSuccessResponse<ReadProductDto>> createCoupon(@Valid @RequestBody CreateCouponDto createCouponDto, HttpServletRequest request) throws Exception {
+    @PostMapping("/coupon")
+    public String createCouponFromForm(@RequestParam Long productId,
+            @RequestParam String name,
+            @RequestParam String code,
+            @RequestParam @DecimalMin("0.0") @DecimalMax("1.0") BigDecimal value,
+            RedirectAttributes redirectAttributes) {
+        try {
+            CreateDiscountDto discountDto = new CreateDiscountDto(value, productId);
+            CreateCouponDto couponDto = new CreateCouponDto(name, code, discountDto);
 
-        CreateCouponUseCaseInput input = couponDtoMapper.createDtoToUseCaseInput(createCouponDto);
-        CreateProductUseCaseOutput output = createCouponUseCase.execute(input);
-        ReadProductDto readDto = mapper.createUseCaseOutputToReadDto(output);
+            var input = couponDtoMapper.createDtoToUseCaseInput(couponDto);
+            createCouponUseCase.execute(input);
 
-        ApiSuccessResponse<ReadProductDto> response = ResponseUtil.success(readDto, "Cupom criado com sucesso.", request.getRequestURI());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+            redirectAttributes.addFlashAttribute("successMessage", "Cupom aplicado com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao aplicar cupom: " + e.getMessage());
+        }
+        return "redirect:/products/supplier";
     }
 
     @GetMapping
@@ -117,14 +124,31 @@ public class ProductController {
     public String getAllBySupplier(Model model) {
         List<CreateProductUseCaseOutput> products = listProductsBySupplierUseCase.execute();
         List<ReadProductDto> readProductDtos = mapper.listUseCaseOutputToReadDto(products);
-
+        //System.out.println("Product" + readProductDtos.get(0).getDiscount().getValue());
         model.addAttribute("products", readProductDtos);
-        return "supplierProducts"; 
+        return "supplierProducts";
     }
     
     @PostMapping("/{id}")
     public String delete(@PathVariable Long id) throws Exception {
         deleteProductUseCase.execute(id);
+        return "redirect:/products/supplier";
+    }
+
+    @PostMapping("/discount/delete")
+    public String removeDiscount(@RequestParam Long productId) {
+        deleteDiscountUseCase.execute(productId);
+        return "redirect:/products/supplier";
+    }
+
+    @PostMapping("/coupon/delete")
+    public String removeCoupon(@RequestParam Long couponId, RedirectAttributes redirectAttributes) {
+        try {
+            deleteCouponUseCase.execute(couponId);
+            redirectAttributes.addFlashAttribute("successMessage", "Cupom removido com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao remover cupom: " + e.getMessage());
+        }
         return "redirect:/products/supplier";
     }
 

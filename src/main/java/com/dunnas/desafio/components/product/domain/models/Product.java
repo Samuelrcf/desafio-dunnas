@@ -14,17 +14,17 @@ public class Product {
 	private String description;
 	private BigDecimal price;
 	private Supplier supplier;
-	private List<Discount> discounts;
-	private List<Coupon> coupons;
+	private Discount discount;
+	private Coupon coupon;
 	
-	public Product(Long id, String name, String description, BigDecimal price, Supplier supplier, List<Discount> discounts, List<Coupon> coupons) {
+	public Product(Long id, String name, String description, BigDecimal price, Supplier supplier, Discount discount, Coupon coupon) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.supplier = supplier;
-		this.discounts = discounts;
-		this.coupons = coupons;
+		this.discount = discount;
+		this.coupon = coupon;
 	}
 	
 	public Product(String name, String description, BigDecimal price, Supplier supplier) {
@@ -79,12 +79,12 @@ public class Product {
 		this.supplier = supplier;
 	}
 
-	public List<Discount> getDiscounts() {
-		return discounts;
+	public Discount getDiscount() {
+		return discount;
 	}
 
-	public List<Coupon> getCoupons() {
-		return coupons;
+	public Coupon getCoupon() {
+		return coupon;
 	}
 
 	@Override
@@ -100,24 +100,17 @@ public class Product {
 				&& Objects.equals(name, other.name) && Objects.equals(price, other.price);
 	}
 
-	public void addDiscount(Discount discount) {
-		if(discount == null) {
-			throw new DomainException("O desconto não pode ser null.");
-		}
 
-		discounts.add(discount);
-	}
-
-	public void addCoupon(Coupon coupon) {
-		if(coupon == null) {
-			throw new DomainException("O cupom não pode ser null.");
-		}
-
-		coupons.add(coupon);
-	}
-	
     public BigDecimal calculateSubtotal(Integer quantity) {
         return price.multiply(BigDecimal.valueOf(quantity));
     }
+
+	public void addDiscount(Discount discount) {
+		this.discount = discount;
+	}
+
+	public void addCoupon(Coupon coupon) {
+		this.coupon = coupon;
+	}
 	
 }
