@@ -104,14 +104,22 @@
               </form>
 
                 <%-- Botão de Desconto --%>
-              <c:set var="currentDiscountValue" value=""/>
-              <c:if test="${not empty product.discount}"><c:set var="currentDiscountValue"><fmt:formatNumber value="${product.discount.value * 100}" maxFractionDigits="0" /></c:set></c:if>
-              <button type="button" class="btn-action btn-discount" onclick="openDiscountModal('${product.id}', '${product.name}', '${currentDiscountValue}')">
-                <c:choose>
-                  <c:when test="${not empty product.discount}">Editar Desconto</c:when>
-                  <c:otherwise>Adicionar Desconto</c:otherwise>
-                </c:choose>
-              </button>
+				<c:set var="currentDiscountValue" value=""/>
+				<c:set var="currentDiscountId" value=""/>
+				<c:if test="${not empty product.discount}">
+				    <c:set var="currentDiscountValue">
+				        <fmt:formatNumber value="${product.discount.value * 100}" maxFractionDigits="0" />
+				    </c:set>
+				    <c:set var="currentDiscountId" value="${product.discount.id}" />
+				</c:if>
+
+				<button type="button" class="btn-action btn-discount"
+				        onclick="openDiscountModal('${product.id}', '${product.name}', '${currentDiscountValue}', '${currentDiscountId}')">
+				    <c:choose>
+				        <c:when test="${not empty product.discount}">Editar Desconto</c:when>
+				        <c:otherwise>Adicionar Desconto</c:otherwise>
+				    </c:choose>
+				</button>
 
                 <%-- Botão de Cupom --%>
               <c:set var="currentCouponId" value=""/>
@@ -203,7 +211,7 @@
   // ===================================================================
   // LÓGICA PARA MODAL DE DESCONTO
   // ===================================================================
-  function openDiscountModal(productId, productName, currentDiscount) {
+  function openDiscountModal(productId, productName, currentDiscount, discountId) {
     const modal = document.getElementById('discountModal');
     const title = document.getElementById('modalDiscountTitle');
     const nameInput = document.getElementById('discountProductName');
@@ -221,7 +229,7 @@
       saveBtn.style.display = 'none';
       removeBtn.style.display = 'inline-block';
       const removeUrl = '${baseUrl}products/discount/delete';
-      removeBtn.onclick = () => removeDiscount(removeUrl, productId);
+      removeBtn.onclick = () => removeDiscount(removeUrl, discountId); // <-- usa o ID do desconto
     } else {
       title.textContent = 'Adicionar Desconto';
       valueInput.value = '';
@@ -249,15 +257,15 @@
     form.submit();
   });
 
-  function removeDiscount(actionUrl, productId) {
+  function removeDiscount(actionUrl, discountId) {
     if (!confirm('Tem certeza que deseja remover o desconto deste produto?')) return;
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = actionUrl;
     const input = document.createElement('input');
     input.type = 'hidden';
-    input.name = 'productId';
-    input.value = productId;
+    input.name = 'discountId'; // nome do campo ajustado para o desconto
+    input.value = discountId;
     form.appendChild(input);
     document.body.appendChild(form);
     form.submit();

@@ -136,8 +136,8 @@ public class ProductController {
     }
 
     @PostMapping("/discount/delete")
-    public String removeDiscount(@RequestParam Long productId) {
-        deleteDiscountUseCase.execute(productId);
+    public String removeDiscount(@RequestParam Long discountId) {
+        deleteDiscountUseCase.execute(discountId);
         return "redirect:/products/supplier";
     }
 
