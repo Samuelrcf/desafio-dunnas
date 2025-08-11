@@ -123,11 +123,6 @@
         <span class="info-label">Usuário:</span>
         <span class="info-value">${supplier.readUserDto.userName}</span>
     </div>
-    <div class="info-row">
-        <span class="info-label">Perfil:</span>
-        <span class="info-value">${supplier.readUserDto.role}</span>
-    </div>
-
     <div class="buttons">
         <a href="${pageContext.request.contextPath}/suppliers/history?page=0&size=10" class="button-link">Pedidos</a>
         <a href="${pageContext.request.contextPath}/products/supplier" class="button-link">Meus Produtos</a>

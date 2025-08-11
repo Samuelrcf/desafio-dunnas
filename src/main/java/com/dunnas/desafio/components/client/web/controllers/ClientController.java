@@ -90,7 +90,7 @@ public class ClientController {
     @GetMapping("/history")
     public String checkHistory(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             Model model) throws Exception {
 
         PaginationResult<CheckHistoryUseCaseOutput> output = checkHistoryUseCase.execute(page, size);

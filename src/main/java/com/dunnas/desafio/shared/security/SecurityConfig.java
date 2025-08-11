@@ -48,14 +48,18 @@ public class SecurityConfig {
                         config.setMaxAge(3600L);
                         return config;
                     }
-                })).authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-                .build();
-                /*.exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
+                }))//.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                //.build();
+                .exceptionHandling(e -> e.accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(authorize -> authorize
                 		
-                		.requestMatchers(HttpMethod.GET, "/register", "/login").permitAll()
+                		.requestMatchers("/register", "/login", "/auth").permitAll()
+                		.requestMatchers("/WEB-INF/views/register.jsp", "/WEB-INF/views/login.jsp").permitAll()
 
+                		.requestMatchers(HttpMethod.POST, "/clients/register", "/suppliers/register").permitAll()
+                		.requestMatchers(HttpMethod.GET, "/clients/register", "/suppliers/register").permitAll()
+                		
                         .requestMatchers(HttpMethod.GET, "/clients/**").hasRole("CLIENT")
                         .requestMatchers(HttpMethod.POST, "/clients/**").hasRole("CLIENT")
                         
@@ -69,7 +73,7 @@ public class SecurityConfig {
 			    		
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();*/
+                .build();
     }
 	
     @Bean

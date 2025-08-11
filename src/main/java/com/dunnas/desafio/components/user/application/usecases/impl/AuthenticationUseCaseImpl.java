@@ -27,7 +27,7 @@ public class AuthenticationUseCaseImpl implements AuthenticationUseCase {
         cookie.setHttpOnly(true);
         cookie.setSecure(false); 
         cookie.setPath("/"); 
-        cookie.setMaxAge(60 * 60 * 24); 
+        cookie.setMaxAge(28800); 
         
         response.addCookie(cookie);
         

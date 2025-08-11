@@ -189,6 +189,7 @@
             color: #222;
         }
         .cart-item-quantity {
+			margin-left: auto;
             color: #555;
         }
         .cart-total {
@@ -198,6 +199,13 @@
             text-align: right;
             color: #1976d2;
         }
+		.remove-item-btn {
+		    background: none;
+		    border: none;
+		    color: red;
+		    font-size: 16px;
+		    cursor: pointer;
+		}
         .finalize-btn {
             background-color: #1976d2;
             color: white;
@@ -217,6 +225,27 @@
         .finalize-btn:hover:enabled {
             background-color: #145ca4;
         }
+		.alert {
+		    padding: 12px 20px;
+		    margin: 15px 0;
+		    border-radius: 5px;
+		    font-weight: 600;
+		    font-size: 1em;
+		    width: 100%;
+		    box-sizing: border-box;
+		}
+
+		.alert-success {
+		    background-color: #d4edda;  
+		    color: #155724;             
+		    border: 1px solid #c3e6cb;
+		}
+
+		.alert-danger {
+		    background-color: #f8d7da;  
+		    color: #721c24;             
+		    border: 1px solid #f5c6cb;
+		}
 		input[type=number]::-webkit-inner-spin-button, 
 		input[type=number]::-webkit-outer-spin-button {
 		    -webkit-appearance: none;
@@ -284,6 +313,14 @@
             <button type="button" class="add-cart-btn">Adicionar ao carrinho</button>
         </div>
     </c:forEach>
+	<c:if test="${not empty success}">
+	    <div class="alert alert-success">${success}</div>
+	</c:if>
+
+	<c:if test="${not empty error}">
+	    <div class="alert alert-danger">${error}</div>
+	</c:if>
+
 </div>
 
 <!-- Botão fixo para abrir carrinho -->
@@ -319,6 +356,12 @@
         document.getElementById('openCartBtn').textContent = 'Carrinho (' + count + ')';
     }
 
+    function removeFromCart(productId) {
+        delete cart[productId];
+        updateCartModal();
+        updateCartButton();
+    }
+
     function updateCartModal() {
         const container = document.getElementById('cartItemsContainer');
         container.innerHTML = '';
@@ -334,10 +377,12 @@
 
             div.innerHTML =
                 '<span class="cart-item-name">' + item.name + '</span>' +
-                '<span class="cart-item-quantity">x ' + item.quantity + ' (R$ ' + formatPrice(itemTotal) + ')</span>';
+                '<span class="cart-item-quantity">x ' + item.quantity + ' (R$ ' + formatPrice(itemTotal) + ')</span>' +
+                '<button class="remove-item-btn" title="Remover" onclick="removeFromCart(\'' + productId + '\')">&times;</button>';
 
             container.appendChild(div);
         }
+
         document.getElementById('cartTotal').textContent = 'Total: R$ ' + formatPrice(total);
 
         const hiddenContainer = document.getElementById('hiddenInputsContainer');
@@ -398,7 +443,7 @@
             qtyInput.value = val + 1;
         });
 
-        card.querySelector('.add-cart-btn').addEventListener('click', (e) => {
+        card.querySelector('.add-cart-btn').addEventListener('click', () => {
             const productId = card.getAttribute('data-id');
             const productName = card.getAttribute('data-name');
             const productPrice = parseFloat(card.getAttribute('data-price'));

@@ -90,12 +90,9 @@
             }
         }
 
-        // Regex CPF: 000.000.000-00 or 00000000000
         const cpfPattern = /^(\d{3}\.\d{3}\.\d{3}\-\d{2}|\d{11})$/;
-        // Regex CNPJ: 00.000.000/0000-00 or 00000000000000
         const cnpjPattern = /^(\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}|\d{14})$/;
-        // Password min 8 chars, at least 1 uppercase, 1 lowercase, 1 number
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+		const passwordPattern = /^.{8,}$/;
 
 		function validateForm(event) {
 		    const userType = document.querySelector('input[name="userType"]:checked').value;
@@ -120,10 +117,9 @@
 		                valid = false;
 		            }
 		        }
-		        // Aqui pega o campo senha dentro de client-fields, que está ativo
 		        const passwordInput = document.querySelector('#client-fields input[name="createUserDto.password"]:not([disabled])');
 		        if (!passwordPattern.test(passwordInput.value)) {
-		            showError(passwordInput, 'Senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula e número.');
+		            showError(passwordInput, 'Senha deve ter pelo menos 8 caracteres.');
 		            valid = false;
 		        }
 
@@ -136,7 +132,7 @@
 		        // Aqui pega o campo senha dentro de supplier-fields, que está ativo
 		        const passwordInput = document.querySelector('#supplier-fields input[name="createUserDto.password"]:not([disabled])');
 		        if (!passwordPattern.test(passwordInput.value)) {
-		            showError(passwordInput, 'Senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula e número.');
+		            showError(passwordInput, 'Senha deve ter pelo menos 8 caracteres.');
 		            valid = false;
 		        }
 		    }
@@ -180,10 +176,10 @@
                 <input type="date" name="birthDate" placeholder="Data de nascimento" required max="<%= java.time.LocalDate.now() %>" title="Data não pode ser futura"/>
                 <input type="text" name="createUserDto.userName" placeholder="Nome de usuário" 
                        pattern="[A-Za-z0-9_]{3,20}" title="3 a 20 caracteres, letras, números ou _" required/>
-                <input type="password" name="createUserDto.password" placeholder="Senha" required 
-                       pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}" 
-                       title="Senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula e número"/>
-                <input type="hidden" name="createUserDto.role" value="CLIENT"/>
+					   <input type="password" name="createUserDto.password" placeholder="Senha" required 
+					          pattern=".{8,}" 
+					          title="Senha deve ter pelo menos 8 caracteres"/>
+					   <input type="hidden" name="createUserDto.role" value="CLIENT"/>
             </div>
 
             <div id="supplier-fields" style="display:none;">
@@ -191,10 +187,10 @@
                 <input type="text" name="cnpj" placeholder="CNPJ (ex: 00.000.000/0000-00)" required pattern="(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|\d{14})" title="Formato CNPJ válido"/>
                 <input type="text" name="createUserDto.userName" placeholder="Nome de usuário" 
                        pattern="[A-Za-z0-9_]{3,20}" title="3 a 20 caracteres, letras, números ou _" required/>
-                <input type="password" name="createUserDto.password" placeholder="Senha" required
-                       pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}"
-                       title="Senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula e número"/>
-                <input type="hidden" name="createUserDto.role" value="SUPPLIER"/>
+					   <input type="password" name="createUserDto.password" placeholder="Senha" required
+					          pattern=".{8,}"
+					          title="Senha deve ter pelo menos 8 caracteres"/>
+					   <input type="hidden" name="createUserDto.role" value="SUPPLIER"/>
             </div>
 
             <button type="submit">Cadastrar</button>

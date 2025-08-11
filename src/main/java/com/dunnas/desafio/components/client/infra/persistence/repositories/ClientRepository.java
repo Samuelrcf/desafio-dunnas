@@ -14,16 +14,18 @@ import jakarta.transaction.Transactional;
 
 public interface ClientRepository extends JpaRepository<ClientEntity, Long>{
 
-	Optional<ClientEntity> findByCpf(String cpf);
-	
-	Optional<ClientEntity> findByUserEntityId(Long id);
-	
-	Boolean existsByUserEntityUserName(String name);
+	@Query(value = "SELECT * FROM find_client_by_cpf(:cpf)", nativeQuery = true)
+	Optional<ClientEntity> findByCpf(@Param("cpf") String cpf);
+
+	@Query(value = "SELECT * FROM find_client_by_user_id(:userId)", nativeQuery = true)
+	Optional<ClientEntity> findByUserEntityId(@Param("userId") Long userId);
+
+	@Query(value = "SELECT exists_client_by_username(:username)", nativeQuery = true)
+	Boolean existsByUserEntityUserName(@Param("username") String username);
 	
 	@Transactional
 	@Modifying
-	@Query("UPDATE ClientEntity c SET c.balance = :balance WHERE c.id = :clientId")
+	@Query(value = "CALL update_client_balance(:clientId, :balance)", nativeQuery = true)
 	void updateBalance(@Param("clientId") Long clientId, @Param("balance") BigDecimal balance);
-
 	
 }

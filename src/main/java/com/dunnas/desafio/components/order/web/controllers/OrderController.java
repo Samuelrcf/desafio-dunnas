@@ -25,50 +25,63 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
-	
-    private final OrderDtoMapper mapper;
-    private final ProductDtoMapper productMapper;
-    private final CreateOrderUseCase createOrderUseCase;
-    private final ListProductsUseCase listProductsUseCase;
 
-    @PostMapping("/create")
-    public String createOrder(
-        @RequestParam List<Long> productIds,
-        @RequestParam List<Integer> quantities,
-        Model model) throws Exception {
+	private final OrderDtoMapper mapper;
+	private final ProductDtoMapper productMapper;
+	private final CreateOrderUseCase createOrderUseCase;
+	private final ListProductsUseCase listProductsUseCase;
 
-        if (productIds == null || quantities == null || productIds.isEmpty() || quantities.isEmpty() || productIds.size() != quantities.size()) {
-            model.addAttribute("error", "Selecione pelo menos um produto com quantidade válida.");
-            List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
-            List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
-            model.addAttribute("products", readProductDtos);
-            return "productList";
-        }
+	@PostMapping("/create")
+	public String createOrder(@RequestParam List<Long> productIds, @RequestParam List<Integer> quantities,
+			Model model) {
+		try {
 
-        List<ProductQuantityDto> productsQuantities = new ArrayList<>();
+			if (productIds == null || quantities == null || productIds.isEmpty() || quantities.isEmpty()
+					|| productIds.size() != quantities.size()) {
+				model.addAttribute("error", "Selecione pelo menos um produto com quantidade válida.");
+				List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+				List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+				model.addAttribute("products", readProductDtos);
+				return "productList";
+			}
 
-        for (int i = 0; i < productIds.size(); i++) {
-            int qty = quantities.get(i);
-            if (qty > 0) {
-                productsQuantities.add(new ProductQuantityDto(productIds.get(i), qty));
-            }
-        }
+			List<ProductQuantityDto> productsQuantities = new ArrayList<>();
+			for (int i = 0; i < productIds.size(); i++) {
+				int qty = quantities.get(i);
+				if (qty > 0) {
+					productsQuantities.add(new ProductQuantityDto(productIds.get(i), qty));
+				}
+			}
 
-        if (productsQuantities.isEmpty()) {
-            model.addAttribute("error", "Selecione pelo menos um produto com quantidade maior que zero.");
-            List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
-            List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
-            model.addAttribute("products", readProductDtos);
-            return "productList";
-        }
+			if (productsQuantities.isEmpty()) {
+				model.addAttribute("error", "Selecione pelo menos um produto com quantidade maior que zero.");
+				List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+				List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+				model.addAttribute("products", readProductDtos);
+				return "productList";
+			}
 
-        CreateOrderDto createOrderDto = new CreateOrderDto(productsQuantities);
-        CreateOrderUseCaseInput input = mapper.createDtoToCreateOrderUseCaseInput(createOrderDto);
+			CreateOrderDto createOrderDto = new CreateOrderDto(productsQuantities);
+			CreateOrderUseCaseInput input = mapper.createDtoToCreateOrderUseCaseInput(createOrderDto);
 
-        createOrderUseCase.execute(input);
+			createOrderUseCase.execute(input);
 
-        model.addAttribute("message", "Pedido realizado com sucesso!");
-        return "orderConfirmation";
-    }
+			List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+			List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+			model.addAttribute("products", readProductDtos);
+
+			model.addAttribute("success", "Pedido realizado com sucesso!");
+
+			return "productList";
+			
+		} catch (Exception e) {
+			model.addAttribute("error", "Erro ao processar pedido: " + e.getMessage());
+			List<CreateProductUseCaseOutput> products = listProductsUseCase.execute();
+			List<ReadProductDto> readProductDtos = productMapper.listUseCaseOutputToReadDto(products);
+			model.addAttribute("products", readProductDtos);
+
+			return "productList"; 
+		}
+	}
+
 }
-
