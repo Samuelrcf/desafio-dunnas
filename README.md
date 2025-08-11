@@ -269,6 +269,3 @@ O sistema já contém alguns usuários pré-cadastrados no banco (via migração
 | Cliente    | maria123    | 12345678  |
 | Fornecedor | fornecedor1 | 12345678  |
 | Fornecedor | fornecedor2 | 12345678  |
-
-Use essas credenciais para acessar e testar o sistema sem necessidade de cadastro inicial.
-
