@@ -36,7 +36,6 @@ O projeto segue o padrão Clean Architecture com abordagem Domain-Driven Design 
 
 ## Baixo acoplamento
 Graças ao Princípio da Inversão de Dependência, o núcleo do sistema (domínio e aplicação) não depende de frameworks, bancos de dados ou tecnologias externas — apenas de interfaces. Isso permite trocar implementações sem alterar a lógica de negócio.  
-**Exemplo:** É possível mudar o banco de dados de PostgreSQL para MySQL alterando apenas a camada de infra.
 
 ## Alta testabilidade
 Como as regras de negócio não dependem de infraestrutura, é possível criar testes unitários isolados para o domínio sem precisar subir servidor ou banco.
@@ -49,6 +48,10 @@ O DDD coloca as regras de negócio como parte central do código, garantindo que
 
 ## Independência tecnológica
 O sistema não fica “preso” a uma tecnologia específica, já que as decisões técnicas (frameworks, bibliotecas, ferramentas, banco de dados) ficam nas bordas da aplicação.
+
+Embora sistemas baseados em **REST API** e **arquitetura distribuída** sejam comuns, neste projeto optamos por uma **arquitetura monolítica** com controladores Spring MVC retornando diretamente páginas JSP.
+Essa escolha faz sentido neste caso porque um monólito reduz a quantidade de camadas e integrações necessárias, já que backend e frontend estão no mesmo projeto e podem compartilhar o mesmo ciclo de deploy.  
+Mesmo sendo monolítico, a aplicação mantém **baixo acoplamento interno** graças à aplicação da Clean Architecture e do DDD, o que permite migrar para uma arquitetura baseada em serviços.
 
 A estrutura de pacotes é organizada da seguinte forma:
 
