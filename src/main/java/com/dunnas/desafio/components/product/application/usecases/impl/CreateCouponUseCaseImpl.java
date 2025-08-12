@@ -1,7 +1,5 @@
 package com.dunnas.desafio.components.product.application.usecases.impl;
 
-import com.dunnas.desafio.components.product.application.gateways.CouponRepositoryGateway;
-import com.dunnas.desafio.components.product.application.gateways.DiscountRepositoryGateway;
 import com.dunnas.desafio.components.product.application.gateways.ProductRepositoryGateway;
 import com.dunnas.desafio.components.product.application.mappers.ProductDomainMapper;
 import com.dunnas.desafio.components.product.application.usecases.CreateCouponUseCase;
@@ -11,25 +9,17 @@ import com.dunnas.desafio.components.product.domain.models.Coupon;
 import com.dunnas.desafio.components.product.domain.models.Discount;
 import com.dunnas.desafio.components.product.domain.models.Product;
 import com.dunnas.desafio.shared.exceptions.ApplicationException;
-import java.util.Optional;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 
 public class CreateCouponUseCaseImpl implements CreateCouponUseCase {
 
     private final ProductRepositoryGateway productRepositoryGateway;
     private final ProductDomainMapper productDomainMapper;
-    private final DiscountRepositoryGateway discountRepositoryGateway;
-    private final CouponRepositoryGateway couponRepositoryGateway;
 
 
     public CreateCouponUseCaseImpl(ProductRepositoryGateway productRepositoryGateway,
-            ProductDomainMapper productDomainMapper,
-            DiscountRepositoryGateway discountRepositoryGateway,
-            CouponRepositoryGateway couponRepositoryGateway) {
+            ProductDomainMapper productDomainMapper) {
         this.productRepositoryGateway = productRepositoryGateway;
         this.productDomainMapper = productDomainMapper;
-        this.discountRepositoryGateway = discountRepositoryGateway;
-        this.couponRepositoryGateway = couponRepositoryGateway;
     }
 
     @Override

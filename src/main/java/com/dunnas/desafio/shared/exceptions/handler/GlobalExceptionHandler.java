@@ -19,6 +19,7 @@ import com.dunnas.desafio.shared.response.ValidationField;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+@ControllerAdvice
 public class GlobalExceptionHandler {
 	
     @ExceptionHandler(Exception.class)

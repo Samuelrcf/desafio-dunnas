@@ -50,12 +50,8 @@ public class ProductBeansConfig {
 
     @Bean
     CreateCouponUseCase createCouponUseCase(ProductRepositoryGateway productRepositoryGateway,
-            ProductDomainMapper productDomainMapper,
-            DiscountRepositoryGateway discountRepositoryGateway,
-            CouponRepositoryGateway couponRepositoryGateway) {
-        return new CreateCouponUseCaseImpl(productRepositoryGateway, productDomainMapper,
-                discountRepositoryGateway,
-                couponRepositoryGateway);
+            ProductDomainMapper productDomainMapper) {
+        return new CreateCouponUseCaseImpl(productRepositoryGateway, productDomainMapper);
     }
 
 	@Bean
@@ -78,12 +74,12 @@ public class ProductBeansConfig {
 	}
 	
     @Bean
-    DeleteDiscountUseCase deleteDiscountUseCase(DiscountRepositoryGateway discountRepositoryGateway, ProductRepositoryGateway productRepositoryGateway) {
-        return new DeleteDiscountUseCaseImpl(discountRepositoryGateway, productRepositoryGateway);
+    DeleteDiscountUseCase deleteDiscountUseCase(DiscountRepositoryGateway discountRepositoryGateway) {
+        return new DeleteDiscountUseCaseImpl(discountRepositoryGateway);
     }
 
     @Bean
-    DeleteCouponUseCase deleteCouponUseCase(CouponRepositoryGateway couponRepositoryGateway, ProductRepositoryGateway productRepositoryGateway) {
-        return new DeleteCouponUseCaseImpl(couponRepositoryGateway, productRepositoryGateway);
+    DeleteCouponUseCase deleteCouponUseCase(CouponRepositoryGateway couponRepositoryGateway) {
+        return new DeleteCouponUseCaseImpl(couponRepositoryGateway);
     }
 }

@@ -1,7 +1,5 @@
 package com.dunnas.desafio.components.product.web.controllers;
 
-import com.dunnas.desafio.components.product.application.usecases.DeleteCouponUseCase;
-import com.dunnas.desafio.components.product.application.usecases.DeleteDiscountUseCase;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -19,10 +17,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.dunnas.desafio.components.product.application.usecases.CreateCouponUseCase;
 import com.dunnas.desafio.components.product.application.usecases.CreateDiscountUseCase;
 import com.dunnas.desafio.components.product.application.usecases.CreateProductUseCase;
+import com.dunnas.desafio.components.product.application.usecases.DeleteCouponUseCase;
+import com.dunnas.desafio.components.product.application.usecases.DeleteDiscountUseCase;
 import com.dunnas.desafio.components.product.application.usecases.DeleteProductUseCase;
 import com.dunnas.desafio.components.product.application.usecases.ListProductsBySupplierUseCase;
 import com.dunnas.desafio.components.product.application.usecases.ListProductsUseCase;
-import com.dunnas.desafio.components.product.application.usecases.inputs.CreateCouponUseCaseInput;
 import com.dunnas.desafio.components.product.application.usecases.inputs.CreateProductUseCaseInput;
 import com.dunnas.desafio.components.product.application.usecases.outputs.CreateProductUseCaseOutput;
 import com.dunnas.desafio.components.product.web.dtos.CreateCouponDto;
@@ -32,6 +31,7 @@ import com.dunnas.desafio.components.product.web.dtos.ReadProductDto;
 import com.dunnas.desafio.components.product.web.mappers.CouponDtoMapper;
 import com.dunnas.desafio.components.product.web.mappers.DiscountDtoMapper;
 import com.dunnas.desafio.components.product.web.mappers.ProductDtoMapper;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;

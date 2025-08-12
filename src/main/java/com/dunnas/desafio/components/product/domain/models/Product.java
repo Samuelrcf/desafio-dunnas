@@ -1,8 +1,6 @@
 package com.dunnas.desafio.components.product.domain.models;
 
-import com.dunnas.desafio.shared.exceptions.DomainException;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 import com.dunnas.desafio.components.supplier.domain.models.Supplier;

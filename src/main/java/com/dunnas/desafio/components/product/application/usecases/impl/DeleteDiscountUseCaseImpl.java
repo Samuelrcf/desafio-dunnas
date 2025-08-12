@@ -1,17 +1,14 @@
 package com.dunnas.desafio.components.product.application.usecases.impl;
 
 import com.dunnas.desafio.components.product.application.gateways.DiscountRepositoryGateway;
-import com.dunnas.desafio.components.product.application.gateways.ProductRepositoryGateway;
 import com.dunnas.desafio.components.product.application.usecases.DeleteDiscountUseCase;
 import com.dunnas.desafio.shared.exceptions.ApplicationException;
 
 public class DeleteDiscountUseCaseImpl implements DeleteDiscountUseCase {
-    private final ProductRepositoryGateway productRepositoryGateway;
     private final DiscountRepositoryGateway discountRepositoryGateway;
 
-    public DeleteDiscountUseCaseImpl(DiscountRepositoryGateway discountRepositoryGateway, ProductRepositoryGateway productRepositoryGateway) {
+    public DeleteDiscountUseCaseImpl(DiscountRepositoryGateway discountRepositoryGateway) {
         this.discountRepositoryGateway = discountRepositoryGateway;
-        this.productRepositoryGateway = productRepositoryGateway;
     }
 
     @Override

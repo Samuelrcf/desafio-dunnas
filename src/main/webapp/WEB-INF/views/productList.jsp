@@ -393,93 +393,123 @@
 </div>
 
 <script>
-    const cart = {};
+	const cart = {};
 
-    function formatPrice(price) {
-        return price.toFixed(2).replace('.', ',');
-    }
+	// Formata preço com vírgula decimal
+	function formatPrice(price) {
+	    return price.toFixed(2).replace('.', ',');
+	}
 
-    function updateCartButton() {
-        const count = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
-        document.getElementById('openCartBtn').textContent = 'Carrinho (' + count + ')';
-    }
+	function updateCartButton() {
+	    const count = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+	    document.getElementById('openCartBtn').textContent = 'Carrinho (' + count + ')';
+	}
 
-    function removeFromCart(productId) {
-        delete cart[productId];
-        updateCartModal();
-        updateCartButton();
-    }
+	function removeFromCart(productId) {
+	    delete cart[productId];
+	    updateCartModal();
+	    updateCartButton();
+	}
 
-    function updateCartModal() {
-        const container = document.getElementById('cartItemsContainer');
-        container.innerHTML = '';
+	function updateCartModal() {
+	    const container = document.getElementById('cartItemsContainer');
+	    container.innerHTML = '';
 
-        let total = 0;
-        for (const productId in cart) {
-            const item = cart[productId];
-            const itemTotal = item.price * item.quantity;
-            total += itemTotal;
+	    let totalOriginal = 0;
+	    let totalDiscounted = 0;
 
-            const div = document.createElement('div');
-            div.className = 'cart-item';
+	    for (const productId in cart) {
+	        const item = cart[productId];
 
-            div.innerHTML =
-                '<span class="cart-item-name">' + item.name + '</span>' +
-                '<span class="cart-item-quantity">x ' + item.quantity + ' (R$ ' + formatPrice(itemTotal) + ')</span>' +
-                '<button class="remove-item-btn" title="Remover" onclick="removeFromCart(\'' + productId + '\')">&times;</button>';
+	        const originalTotal = item.price * item.quantity;
 
-            container.appendChild(div);
-        }
+	        // Calcula desconto total: desconto do produto + cupom (se aplicável)
+	        let discountPercent = 0;
 
-        document.getElementById('cartTotal').textContent = 'Total: R$ ' + formatPrice(total);
+	        if (item.discount) {
+	            discountPercent += item.discount;
+	        }
+	        if (item.applyCoupon && item.couponDiscount) {
+	            discountPercent += item.couponDiscount;
+	        }
 
-        const hiddenContainer = document.getElementById('hiddenInputsContainer');
-        hiddenContainer.innerHTML = '';
+	        // Limita desconto máximo a 100%
+	        if (discountPercent > 1) discountPercent = 1;
 
-		for (const productId in cart) {
-		    const item = cart[productId];
+	        const discountedTotal = originalTotal * (1 - discountPercent);
 
-		    const inputId = document.createElement('input');
-		    inputId.type = 'hidden';
-		    inputId.name = 'productIds';
-		    inputId.value = productId;
-		    hiddenContainer.appendChild(inputId);
+	        totalOriginal += originalTotal;
+	        totalDiscounted += discountedTotal;
 
-		    const inputQty = document.createElement('input');
-		    inputQty.type = 'hidden';
-		    inputQty.name = 'quantities';
-		    inputQty.value = item.quantity;
-		    hiddenContainer.appendChild(inputQty);
+	        // Cria div do item no carrinho
+	        const div = document.createElement('div');
+	        div.className = 'cart-item';
 
-		    const inputCoupon = document.createElement('input');
-		    inputCoupon.type = 'hidden';
-		    inputCoupon.name = 'applyCoupon'; // ou applyCoupons[]
-		    inputCoupon.value = item.applyCoupon ? 'true' : 'false';
-		    hiddenContainer.appendChild(inputCoupon);
-		}
+	        let discountInfo = '';
+	        if (discountPercent > 0) {
+	            const discountPercentFormatted = Math.round(discountPercent * 100);
+	            discountInfo = `<br><span class="cart-item-discount">${discountPercentFormatted} </span>`;
+	        }
 
-        const checkoutBtn = document.querySelector('#checkoutForm button[type="submit"]');
-        checkoutBtn.disabled = Object.keys(cart).length === 0;
-    }
+			div.innerHTML =
+			  '<span class="cart-item-name">' + item.name + '</span>' +
+			  '<span class="cart-item-quantity" style="margin-right: 8px;">(x ' + item.quantity + ')</span>' +
+			  discountInfo +
+			  '<br><span class="cart-item-price">R$ ' + (discountPercent > 0 ? formatPrice(discountedTotal) : formatPrice(originalTotal)) + '</span>' +
+			  '<button class="remove-item-btn" title="Remover" onclick="removeFromCart(\'' + productId + '\')">&times;</button>';
 
-    // Abrir modal carrinho
-    document.getElementById('openCartBtn').addEventListener('click', () => {
-        updateCartModal();
-        document.getElementById('cartModal').style.display = 'block';
-    });
+	        container.appendChild(div);
+	    }
 
-    // Fechar modal carrinho
-    document.querySelector('.close-modal').addEventListener('click', () => {
-        document.getElementById('cartModal').style.display = 'none';
-    });
+	    document.getElementById('cartTotal').textContent = 'Total: R$ ' + formatPrice(totalDiscounted);
 
-    // Fecha modal ao clicar fora do conteúdo
-    window.addEventListener('click', (e) => {
-        const modal = document.getElementById('cartModal');
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
+	    const hiddenContainer = document.getElementById('hiddenInputsContainer');
+	    hiddenContainer.innerHTML = '';
+
+	    for (const productId in cart) {
+	        const item = cart[productId];
+
+	        const inputId = document.createElement('input');
+	        inputId.type = 'hidden';
+	        inputId.name = 'productIds';
+	        inputId.value = productId;
+	        hiddenContainer.appendChild(inputId);
+
+	        const inputQty = document.createElement('input');
+	        inputQty.type = 'hidden';
+	        inputQty.name = 'quantities';
+	        inputQty.value = item.quantity;
+	        hiddenContainer.appendChild(inputQty);
+
+	        const inputCoupon = document.createElement('input');
+	        inputCoupon.type = 'hidden';
+	        inputCoupon.name = 'applyCoupon';
+	        inputCoupon.value = item.applyCoupon ? 'true' : 'false';
+	        hiddenContainer.appendChild(inputCoupon);
+	    }
+
+	    const checkoutBtn = document.querySelector('#checkoutForm button[type="submit"]');
+	    checkoutBtn.disabled = Object.keys(cart).length === 0;
+	}
+
+	// Evento para abrir modal do carrinho
+	document.getElementById('openCartBtn').addEventListener('click', () => {
+	    updateCartModal();
+	    document.getElementById('cartModal').style.display = 'block';
+	});
+
+	// Evento para fechar modal
+	document.querySelector('.close-modal').addEventListener('click', () => {
+	    document.getElementById('cartModal').style.display = 'none';
+	});
+
+	// Fecha modal ao clicar fora do conteúdo
+	window.addEventListener('click', (e) => {
+	    const modal = document.getElementById('cartModal');
+	    if (e.target === modal) {
+	        modal.style.display = 'none';
+	    }
+	});
 
 	document.querySelectorAll('.product-card').forEach(card => {
 	    const decreaseBtn = card.querySelector('.qty-decrease');
@@ -504,6 +534,26 @@
 	        const quantity = parseInt(qtyInput.value);
 	        const applyCoupon = couponCheckbox ? couponCheckbox.checked : false;
 
+	        // Pega desconto do produto (data attribute ou dentro do objeto)
+	        // Como não tem no atributo data, vamos pegar do DOM:
+	        let discountPercent = 0;
+	        const discountEl = card.querySelector('.discounts strong');
+	        if (discountEl) {
+	            // Exemplo: "Desconto: 15%"
+	            const discountText = card.querySelector('.discounts').textContent.match(/\d+/);
+	            if (discountText) discountPercent = parseInt(discountText[0], 10) / 100;
+	        }
+
+	        // Pega desconto do cupom (se checkbox marcado)
+	        let couponDiscountPercent = 0;
+	        if (applyCoupon) {
+	            const couponEl = card.querySelector('.coupons span');
+	            if (couponEl) {
+	                const couponText = couponEl.textContent.match(/\d+/);
+	                if (couponText) couponDiscountPercent = parseInt(couponText[0], 10) / 100;
+	            }
+	        }
+
 	        if (quantity < 1) {
 	            alert('Quantidade deve ser pelo menos 1.');
 	            return;
@@ -513,7 +563,14 @@
 	            cart[productId].quantity += quantity;
 	            cart[productId].applyCoupon = applyCoupon; // atualiza se aplicar cupom
 	        } else {
-	            cart[productId] = { name: productName, price: productPrice, quantity: quantity, applyCoupon: applyCoupon };
+	            cart[productId] = {
+	                name: productName,
+	                price: productPrice,
+	                quantity: quantity,
+	                applyCoupon: applyCoupon,
+	                discount: discountPercent,
+	                couponDiscount: couponDiscountPercent
+	            };
 	        }
 
 	        updateCartButton();
