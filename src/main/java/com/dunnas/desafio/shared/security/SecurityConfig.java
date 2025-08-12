@@ -54,7 +54,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(authorize -> authorize
                 		
-                		.requestMatchers("/register", "/login", "/auth").permitAll()
+                		.requestMatchers("/register", "/login", "/auth", "/error").permitAll()
                 		.requestMatchers("/WEB-INF/views/register.jsp", "/WEB-INF/views/login.jsp").permitAll()
 
                 		.requestMatchers(HttpMethod.POST, "/clients/register", "/suppliers/register").permitAll()
