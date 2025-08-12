@@ -1,0 +1,31 @@
+spring:
+ application:
+  name: academic-pass
+ #profiles:
+  #active: dev
+ datasource:
+  url: jdbc:postgresql://localhost:5432/desafio-dunnas
+  username: postgres
+  password: root
+  driver-class-name: org.postgresql.Driver
+ jpa:
+  database-platform: org.hibernate.dialect.PostgreSQLDialect
+  hibernate:
+   ddl-auto: update
+  show-sql: false
+  properties:
+   hibernate:
+    jdbc:
+     lob:
+      non-contextual-creation: true
+ flyway:
+  enabled: true
+  locations: classpath:db/migration
+  baseline-on-migrate: true
+jwt:
+ secret: ${JWT_SECRET_KEY:secret-key}
+ mvc:
+   view:
+     prefix: /WEB-INF/views/
+     suffix: .jsp
+
