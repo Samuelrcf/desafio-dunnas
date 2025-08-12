@@ -274,3 +274,13 @@ O sistema já contém alguns usuários pré-cadastrados no banco (via migração
 | Cliente    | maria123    | 12345678  |
 | Fornecedor | fornecedor1 | 12345678  |
 | Fornecedor | fornecedor2 | 12345678  |
+
+## 🚧 Melhorias Futuras
+
+- **Paginação**: Implementar paginação em todas as páginas que exibem listas (produtos, pedidos, usuários etc.), não apenas na tela de histórico, para melhorar performance e usabilidade em grandes volumes de dados.
+
+- **Múltiplos cupons**: Permitir que fornecedores criem múltiplos cupons por produto(s) para que clientes possam ter uma gama de cupons disponíveis.
+
+- **Filtros avançados**: Implementar filtros e buscas avançadas em listas para facilitar a navegação e localização de registros.
+
+- **Melhorias na interface**: Tornar o frontend mais responsivo e acessível, com melhorias de UX/UI.
