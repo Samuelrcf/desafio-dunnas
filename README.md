@@ -255,7 +255,7 @@ createdb seubanco
 
 # 3. Configurar banco de dados no application.yml
  datasource:
-  url: jdbc:postgresql://localhost:5432/seubanco
+  url: jdbc:postgresql://localhost:5432/desafio-dunnas
   username: usuario
   password: senha
 
