@@ -116,7 +116,7 @@
 				<button type="button" class="btn-action btn-discount"
 				        onclick="openDiscountModal('${product.id}', '${product.name}', '${currentDiscountValue}', '${currentDiscountId}')">
 				    <c:choose>
-				        <c:when test="${not empty product.discount}">Editar Desconto</c:when>
+				        <c:when test="${not empty product.discount}">Visualizar Desconto</c:when>
 				        <c:otherwise>Adicionar Desconto</c:otherwise>
 				    </c:choose>
 				</button>
@@ -132,7 +132,7 @@
               </c:if>
               <button type="button" class="btn-action btn-coupon" onclick="openCouponModal('${product.id}', '${product.name}', '${currentCouponId}', '${currentCouponCode}', '${currentCouponValue}')">
                 <c:choose>
-                  <c:when test="${not empty product.coupon}">Editar Cupom</c:when>
+                  <c:when test="${not empty product.coupon}">Visualizar Cupom</c:when>
                   <c:otherwise>Adicionar Cupom</c:otherwise>
                 </c:choose>
               </button>
@@ -223,7 +223,7 @@
     nameInput.value = productName;
 
     if (currentDiscount) {
-      title.textContent = 'Editar Desconto';
+      title.textContent = 'Visualizar Desconto';
       valueInput.value = currentDiscount;
       valueInput.disabled = true;
       saveBtn.style.display = 'none';
@@ -288,7 +288,7 @@
     nameInput.value = productName;
 
     if (currentCouponCode) {
-      title.textContent = 'Editar Cupom';
+      title.textContent = 'Visualizar Cupom';
       couponNameInput.value = ''; 
       codeInput.value = currentCouponCode;
       valueInput.value = currentCouponValue;
