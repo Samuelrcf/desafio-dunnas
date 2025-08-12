@@ -248,10 +248,10 @@ Integração direta com controladores Spring MVC.
 
 ```bash
 # 1. Clonar o repositório
-git clone https://github.com/Samuelrcf/desafio-dunnas.git
+git clone git@github.com:Samuelrcf/desafio-dunnas.git
 
 # 2. Criar o banco de dados no PostgreSQL (via pgAdmin ou terminal)
-createdb seubanco
+createdb desafio-dunnas
 
 # 3. Configurar banco de dados no application.yml
  datasource:
