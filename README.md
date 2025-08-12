@@ -275,6 +275,11 @@ O sistema já contém alguns usuários pré-cadastrados no banco (via migração
 | Fornecedor | fornecedor1 | 12345678  |
 | Fornecedor | fornecedor2 | 12345678  |
 
+## Primeiro acesso
+Após iniciar a aplicação, acesse:
+- Página de login: http://localhost:8080/login
+- Página de registro: http://localhost:8080/register
+
 ## 🚧 Melhorias Futuras
 
 - **Paginação**: Implementar paginação em todas as páginas que exibem listas (produtos, pedidos, usuários etc.), não apenas na tela de histórico, para melhorar performance e usabilidade em grandes volumes de dados.
